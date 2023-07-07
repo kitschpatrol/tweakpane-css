@@ -1,0 +1,28 @@
+{
+  "name": "tweakpane-css",
+  "version": "1.0.0",
+  "description": "A Svelte component for tweaking CSS variables.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Eric Mika",
+    "email": "eric@ericmika.com",
+    "url": "https://ericmika.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kitschpatrol/tweakpane-css.git"
+  },
+  "bugs": "https://github.com/kitschpatrol/tweakpane-css/issues",
+  "homepage": "https://github.com/kitschpatrol/tweakpane-css",
+  "keywords": [
+    "tweakpane",
+    "svelte",
+    "astro",
+    "css"
+  ],
+  "author": "Eric Mika",
+  "license": "MIT"
+}

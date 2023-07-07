@@ -1,0 +1,28 @@
+---
+import Tweakpane from '~/components/Tweakpane.svelte'
+---
+
+<!-- TODO break this back out and make "preload" a separate thing? -->
+<Tweakpane client:only='svelte' setCssVarsBeforePageRender={false} />
+
+<!-- Necessary hack to avoid flash of incorrect CSS vars -->
+<!-- Could also move this into the base template head, but this is more portable... -->
+<!-- TODO same strategy for themetoggler? -->
+<!-- if type="module", it flashes -->
+<!-- <svelte:head> is not enough... doesn't prerender? -->
+<script is:inline>
+	if (typeof localStorage !== 'undefined') {
+		const cssVars = localStorage.getItem('css')
+		cssVars &&
+			Object.entries(JSON.parse(cssVars)).forEach(([variableName, value]) => {
+				const units = ((val) =>
+					isNaN(parseFloat(val)) ? '' : val.match(/^-?[\d.]+\s?([a-z%]*)$/i)?.[1] || '')(
+					window.getComputedStyle(document.documentElement).getPropertyValue(variableName),
+				)
+				document.documentElement.style.setProperty(
+					variableName,
+					`${value}${units ? `${units}` : ''}`,
+				)
+			})
+	}
+</script>
