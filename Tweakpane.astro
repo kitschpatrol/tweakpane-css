@@ -1,9 +1,9 @@
 ---
-import Tweakpane from '~/components/Tweakpane.svelte'
+import TweakpaneSvelte from '~/components/Tweakpane.svelte'
 ---
 
 <!-- TODO break this back out and make "preload" a separate thing? -->
-<Tweakpane client:only='svelte' setCssVarsBeforePageRender={false} />
+<TweakpaneSvelte client:only='svelte' setCssVarsBeforePageRender={false} />
 
 <!-- Necessary hack to avoid flash of incorrect CSS vars -->
 <!-- Could also move this into the base template head, but this is more portable... -->

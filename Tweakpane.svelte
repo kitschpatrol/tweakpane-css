@@ -172,7 +172,7 @@
 
 		// set up the tweakpane
 		const pane = new Pane({
-			title: 'Root CSS Variables',
+			title: 'Tweakpane CSS',
 			expanded: $panelConfigStore.expanded,
 			container: containerElement,
 		})
