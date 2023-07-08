@@ -8,8 +8,6 @@
 	import type { TpFoldEvent } from '@tweakpane/core'
 	import type { TpButtonGridEvent } from '@tweakpane/plugin-essentials/dist/types/button-grid/api/tp-button-grid-event'
 
-	// Consider: https://github.com/pierogis/svelte-tweakpane
-
 	// useful for the astro wrapper, since <svelte:head> doesn't render at build time
 	// disable to skip the <svelte:head> section
 	export let setCssVarsBeforePageRender = true
@@ -78,8 +76,6 @@
 			$panelConfigStore.y += dy
 		}
 	}
-
-	// Main
 
 	// set up stores for local persistence
 	let cssVarStore: Writable<Record<string, string | number>>
