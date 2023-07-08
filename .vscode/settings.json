@@ -28,5 +28,5 @@
     "**/.stylelintrc"
   ],
   "stylelint.validate": ["css", "html", "astro", "svelte"],
-  "stylelint.configBasedir": ".",
+  "stylelint.configBasedir": "."
 }

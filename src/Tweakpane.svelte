@@ -9,7 +9,7 @@
 	import type { TpButtonGridEvent } from '@tweakpane/plugin-essentials/dist/types/button-grid/api/tp-button-grid-event'
 
 	// useful for the astro wrapper, since <svelte:head> doesn't render at build time
-	// disable to skip the <svelte:head> section
+	// false skips the <svelte:head> section and assumes the head script will be added in a different way
 	export let setCssVarsBeforePageRender = true
 
 	const minPanelWidth = 200
@@ -105,47 +105,6 @@
 			.flatMap((cssRule: CSSStyleRule) => Array.from(cssRule.style))
 			.filter((style: string) => style.startsWith('--'))
 
-		// Alternate strategies to get variables from additional selectors...
-		// const rootCssVariables2: Record<string, string[]> = Array.from(document.styleSheets)
-		// 	.flatMap((styleSheet: CSSStyleSheet) => Array.from(styleSheet.cssRules))
-		// 	.reduce((accumulator: Record<string, string[]>, cssRule: CSSRule) => {
-		// 		if (cssRule instanceof CSSStyleRule) {
-		// 			const styles = Array.from(cssRule.style).filter((style: string) => style.startsWith('--'))
-		// 			if (styles.length) {
-		// 				accumulator[cssRule.selectorText] = styles
-		// 			}
-		// 		}
-		// 		return accumulator
-		// 	}, {})
-		// console.log(`rootCssVariables2: ${JSON.stringify(rootCssVariables2, null, 2)}`)
-
-		// const rootCssVariables3: Record<string, string[]> = Array.from(document.styleSheets).reduce(
-		// 	(acc: Record<string, string[]>, sheet: CSSStyleSheet) => {
-		// 		Array.from(sheet.cssRules).forEach((rule: CSSRule) => {
-		// 			if (rule instanceof CSSMediaRule) {
-		// 				Array.from(rule.cssRules).forEach((mediaRule: CSSRule) => {
-		// 					if (mediaRule instanceof CSSStyleRule) {
-		// 						const styles = Array.from(mediaRule.style).filter((style: string) =>
-		// 							style.startsWith('--'),
-		// 						)
-		// 						if (styles.length) {
-		// 							acc[`${rule.media[0]} ${mediaRule.selectorText}`] = styles
-		// 						}
-		// 					}
-		// 				})
-		// 			} else if (rule instanceof CSSStyleRule) {
-		// 				const styles = Array.from(rule.style).filter((style: string) => style.startsWith('--'))
-		// 				if (styles.length) {
-		// 					acc[rule.selectorText] = styles
-		// 				}
-		// 			}
-		// 		})
-		// 		return acc
-		// 	},
-		// 	{},
-		// )
-		// console.log(`rootCssVariables3: ${JSON.stringify(rootCssVariables3, null, 2)}`)
-
 		// set up the persistent local store
 		cssVarStore = persisted(
 			'css',
@@ -154,7 +113,7 @@
 					window.getComputedStyle(document.documentElement).getPropertyValue(variableName),
 				)
 				return acc
-			}, {} as Record<string, any>),
+			}, {} as Record<string, number | string>),
 		)
 
 		// clean up stale keys in the store
@@ -287,13 +246,15 @@
 		dragBarElement.addEventListener('pointerdown', downListener)
 
 		// add width adjuster
-		const widthHandleElement = dragBarElement.parentElement!.appendChild(
+		const widthHandleElement = dragBarElement.parentElement?.appendChild(
 			document.createElement('div'),
 		)
-		widthHandleElement.className = 'tp-custom-width-handle'
-		widthHandleElement.innerText = '↔'
-		widthHandleElement.addEventListener('click', clickBlocker)
-		widthHandleElement.addEventListener('pointerdown', downListener)
+		if (widthHandleElement) {
+			widthHandleElement.className = 'tp-custom-width-handle'
+			widthHandleElement.innerText = '↔'
+			widthHandleElement.addEventListener('click', clickBlocker)
+			widthHandleElement.addEventListener('pointerdown', downListener)
+		}
 
 		// clean up
 		return () => {
@@ -302,10 +263,13 @@
 			dragBarElement.removeEventListener('pointermove', moveListener)
 			dragBarElement.removeEventListener('pointerup', upListener)
 			dragBarElement.removeEventListener('pointerdown', downListener)
-			widthHandleElement.removeEventListener('click', clickBlocker)
-			widthHandleElement.removeEventListener('pointermove', moveListener)
-			widthHandleElement.removeEventListener('pointerup', upListener)
-			widthHandleElement.removeEventListener('pointerdown', downListener)
+
+			if (widthHandleElement) {
+				widthHandleElement.removeEventListener('click', clickBlocker)
+				widthHandleElement.removeEventListener('pointermove', moveListener)
+				widthHandleElement.removeEventListener('pointerup', upListener)
+				widthHandleElement.removeEventListener('pointerdown', downListener)
+			}
 			pane.dispose()
 		}
 	})

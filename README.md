@@ -1,5 +1,7 @@
 # tweakpane-css
 
+<a href="https://npmjs.com/package/eleventy-plugin-parcel"><img src="https://img.shields.io/npm/v/eleventy-plugin-parcel.svg" alt="npm package"></a>
+
 🚧 Work In Progress 🚧
 
 ## Overview
@@ -37,9 +39,11 @@ A separate [Astro](https://astro.build) component wrapper is included as well, s
 
 ## Usage
 
+Currently, I'm only using this in Astro and Svelte projects that have their own build and bundling process — so there's not a stand-alone or vanilla JS option at this point.
+
 ### Installation
 
-```
+```shell
 npm install tweakpane-css
 ```
 
@@ -74,7 +78,7 @@ import Tweakpane from 'tweakpane-css/src/Tweakpane.astro'
 ---
 
 <!DOCTYPE html>
-<html lang='{ metadata.language }'>
+<html>
   <head>
     <!-- ... -->
   </head>
@@ -95,8 +99,13 @@ import Tweakpane from 'tweakpane-css/src/Tweakpane.astro'
 </style>
 ```
 
+## Acknowledgements
+
+Thanks to [Hiroki Kokubun](https://cocopon.me) for the excellent Tweakpane library.
+
 ## Todo
 
+- [ ] Vanilla JS build
 - [ ] General clean up
 - [ ] Peer dependencies
 - [ ] Example projects
