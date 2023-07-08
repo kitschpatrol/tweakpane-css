@@ -1,0 +1,79 @@
+{
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:astro/recommended",
+    "plugin:astro/jsx-a11y-recommended",
+    "prettier"
+  ],
+  "overrides": [
+    {
+      "files": ["*.astro"],
+      "parser": "astro-eslint-parser",
+      "parserOptions": {
+        "extraFileExtensions": [".astro"],
+        "parser": "@typescript-eslint/parser"
+      },
+      "rules": {
+        "no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "destructuredArrayIgnorePattern": "^_"
+          }
+        ]
+      }
+    },
+    {
+      "extends": ["plugin:@typescript-eslint/recommended", "prettier"],
+      // Define the configuration for ts files and astro `<script>` tag contents.
+      // Script in `<script>` is assigned a virtual file name with the `.js` extension.
+      "files": ["*.ts", "**/*.astro/*.js", "*.astro/*.js"],
+      "parser": "@typescript-eslint/parser",
+      "rules": {
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "destructuredArrayIgnorePattern": "^_"
+          }
+        ],
+        // silence bug related to break statements
+        "no-fallthrough": "off",
+        "no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["*.d.ts"],
+      "rules": {
+        "@typescript-eslint/triple-slash-reference": "off"
+      }
+    },
+    {
+      "files": ["*.svelte"],
+      "parser": "svelte-eslint-parser",
+      "parserOptions": {
+        "parser": "@typescript-eslint/parser"
+      },
+      "rules": {
+        // shouldn't this be coming from the svelte-eslint-parser?
+        "no-inner-declarations": 0
+      }
+    }
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "jsx-a11y"],
+  "root": true,
+  "rules": {
+    // shouldn't have formatting errors... but this one is useful
+    "spaced-comment": ["error", "always", { "markers": ["/"] }]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "endOfLine": "lf",
+  "jsxSingleQuote": true,
+  "organizeImportsSkipDestructiveCodeActions": true,
+  "overrides": [
+    {
+      "files": [".*", "*.json", "*.md", "*.mdx", "*.toml", "*.yml"],
+      "options": {
+        "useTabs": false
+      }
+    },
+    {
+      "files": "*.astro",
+      "options": {
+        "plugins": ["prettier-plugin-astro"],
+        "parser": "astro"
+      }
+    },
+    {
+      "files": "*.svelte",
+      "options": {
+        "plugins": ["prettier-plugin-svelte"],
+        "parser": "svelte"
+      }
+    }
+  ],
+  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-sh", "prettier-plugin-pkg"],
+  "pluginSearchDirs": false,
+  "printWidth": 100,
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "useTabs": true
+}

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
+    "checkJs": true,
+    "isolatedModules": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "target": "ESNext"
+  },
+  "exclude": ["node_modules", "**/node_modules/*", ".vscode", "dist", "meta", ".astro"],
+  "extends": "astro/tsconfigs/strictest"
+}

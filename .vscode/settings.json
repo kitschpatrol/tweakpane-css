@@ -1,0 +1,32 @@
+{
+  "[astro]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.rulers": [180],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "astro",
+    "typescript",
+    "typescriptreact",
+    "svelte"
+  ],
+  "files.associations": {
+    "*.mdx": "markdown"
+  },
+  "prettier.documentSelectors": [
+    "**/*.astro",
+    "**/*.svelte",
+    "**/.prettierignore",
+    "**/.npmrc",
+    "**/.eslintignore",
+    "**/.stylelintrc"
+  ],
+  "stylelint.validate": ["css", "html", "astro", "svelte"],
+  "stylelint.configBasedir": ".",
+}
