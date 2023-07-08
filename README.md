@@ -37,6 +37,8 @@ The Tweakpane window has been augmented a bit to allow drag-based resizing and r
 
 A separate [Astro](https://astro.build) component wrapper is included as well, since the component depends on adding an inline script to `<head>` to set overridden variables early during the page render to avoid flashes of the default values. Astro's Svelte integration does not currently support `<svelte:head>`.
 
+Note that this component relies on Tweakpane 4, which is currently in beta.
+
 ## Usage
 
 Currently, I'm only using this in Astro and Svelte projects that have their own build and bundling process — so there's not a stand-alone or vanilla JS option at this point.
@@ -99,7 +101,7 @@ import Tweakpane from 'tweakpane-css/src/Tweakpane.astro'
 </style>
 ```
 
-Astro currently requires you to exclude the tweakpane-css package from optimization during vite dev builds. Failing to exclude the package will result in the following runtime error:   
+Astro currently requires you to exclude the tweakpane-css package from optimization during vite dev builds. Failing to exclude the package will result in the following runtime error:
 
 ```
 The requested module '/node_modules/tweakpane/dist/tweakpane.js' does not provide an export named 'Pane'
@@ -146,3 +148,10 @@ Astro dev issues:
 
 - [Vite optimizeDeps](https://github.com/nuxt/vite/issues/56)
 - Vite's dependency optimization only runs by default in dev mode (which is why preview builds work), and symlinked packages are excluded from dependency optimization (which is why development against a local copy of tweakpane-css did not trigger the runtime export error)
+
+Tweakpane 4:
+
+- [Tweakpane + Core v4](https://github.com/cocopon/tweakpane/tree/v4)
+- [plugin-essentials v4](https://github.com/tweakpane/plugin-essentials/tree/v4)
+- [Breaking changes in v4](https://github.com/cocopon/tweakpane/issues/396#)
+- [Docs Repo](https://github.com/tweakpane/docs)

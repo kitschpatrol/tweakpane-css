@@ -5,8 +5,6 @@
 	import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 	import type { ButtonGridApi } from '@tweakpane/plugin-essentials'
 	import type { Writable } from 'svelte/store'
-	import type { TpFoldEvent } from '@tweakpane/core'
-	import type { TpButtonGridEvent } from '@tweakpane/plugin-essentials/dist/types/button-grid/api/tp-button-grid-event'
 
 	// useful for the astro wrapper, since <svelte:head> doesn't render at build time
 	// false skips the <svelte:head> section and assumes the head script will be added in a different way
@@ -34,9 +32,9 @@
 	async function copyToClipboard(text: string): Promise<void> {
 		try {
 			await navigator.clipboard.writeText(text)
-			console.log(`Copied to clipboard:\n${text}`)
+			console.log(`[tweakpane-css] Copied to clipboard:\n${text}`)
 		} catch (err) {
-			console.error(`Failed to copy text: ${err}`)
+			console.error(`[tweakpane-css] Failed to copy text: ${err}`)
 		}
 	}
 
@@ -123,7 +121,7 @@
 			}
 		})
 
-		// console.log(`Initial $cssVarStore: ${JSON.stringify($cssVarStore, null, 2)}`)
+		// console.log(`[tweakpane-css] Initial $cssVarStore: ${JSON.stringify($cssVarStore, null, 2)}`)
 
 		// set up the tweakpane
 		const pane = new Pane({
@@ -137,7 +135,7 @@
 			cssVarStore.set($cssVarStore) // force an update
 		})
 
-		pane.on('fold', (e: TpFoldEvent) => {
+		pane.on('fold', (e) => {
 			$panelConfigStore.expanded = e.expanded
 		})
 
@@ -147,25 +145,23 @@
 				.getComputedStyle(document.documentElement)
 				.getPropertyValue(variableName)
 			const units = getUnits(originalValue)
-			pane.addInput($cssVarStore, variableName, {
+			pane.addBinding($cssVarStore, variableName, {
 				label: `${cleanName(variableName)}${units ? ` (${units})` : ''}`,
 			})
 		})
 
-		pane.addSeparator()
+		pane.addBlade({ view: 'separator' })
 
 		// buttons to clear and copy
 		;(
 			pane.addBlade({
 				view: 'buttongrid',
-				size: [3, 1],
+				size: [2, 1],
 				cells: (x: number, y: number) => ({
-					title: [['Copy CSS', 'Copy JSON', 'Reset']].at(y)?.at(x),
+					title: [['Copy CSS', 'Reset']].at(y)?.at(x),
 				}),
 			}) as ButtonGridApi
-		).on('click', (ev: TpButtonGridEvent) => {
-			console.log(ev.index)
-
+		).on('click', (ev) => {
 			switch (ev.index[0]) {
 				case 0:
 					{
@@ -181,13 +177,7 @@
 					break
 				case 1:
 					{
-						copyToClipboard(JSON.stringify(pane.exportPreset(), null, 2))
-					}
-
-					break
-				case 2:
-					{
-						console.log(`Clearing changes to CSS Variables`)
+						console.log(`[tweakpane-css] Clearing changes to CSS Variables`)
 						if (typeof localStorage !== 'undefined') {
 							localStorage.removeItem('css')
 							location.reload()
