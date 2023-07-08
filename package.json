@@ -1,6 +1,6 @@
 {
   "name": "tweakpane-css",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A component for tweaking CSS variables at runtime.",
   "repository": {
     "type": "git",
@@ -36,6 +36,7 @@
     "lint:typescript": "tsc --noEmit"
   },
   "dependencies": {
+    "@tweakpane/core": "^1.1.9",
     "@tweakpane/plugin-essentials": "^0.1.8",
     "svelte-local-storage-store": "^0.5.0",
     "tweakpane": "^3.1.10"
@@ -43,28 +44,27 @@
   "devDependencies": {
     "@astrojs/svelte": "^3.1.0",
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
-    "@tweakpane/core": "^1.1.9",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
-    "astro": "^2.8.0",
     "astro-eslint-parser": "^0.14.0",
-    "eslint": "^8.44.0",
+    "astro": "^2.8.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-astro": "^0.27.2",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-svelte": "^2.32.2",
-    "markdownlint": "^0.29.0",
+    "eslint": "^8.44.0",
     "markdownlint-cli": "^0.35.0",
+    "markdownlint": "^0.29.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.8.8",
     "prettier-plugin-astro": "^0.10.0",
     "prettier-plugin-organize-imports": "^3.2.2",
     "prettier-plugin-pkg": "^0.17.1",
     "prettier-plugin-sh": "^0.12.8",
     "prettier-plugin-svelte": "^2.10.1",
-    "stylelint": "^15.10.1",
+    "prettier": "^2.8.8",
     "stylelint-config-html": "^1.1.0",
     "stylelint-config-standard": "^34.0.0",
+    "stylelint": "^15.10.1",
     "svelte": "^4.0.5"
   },
   "publishConfig": {
