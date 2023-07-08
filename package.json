@@ -1,6 +1,6 @@
 {
   "name": "tweakpane-css",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A component for tweaking CSS variables at runtime.",
   "repository": {
     "type": "git",

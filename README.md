@@ -101,22 +101,6 @@ import Tweakpane from 'tweakpane-css/src/Tweakpane.astro'
 </style>
 ```
 
-Astro currently requires you to exclude the tweakpane-css package from optimization during vite dev builds. Failing to exclude the package will result in the following runtime error:
-
-```
-The requested module '/node_modules/tweakpane/dist/tweakpane.js' does not provide an export named 'Pane'
-```
-
-Add the following to your `astro.config` file to prevent this:
-
-```ts
-vite: {
-  optimizeDeps: {
-    exclude: ['tweakpane-css'],
-  },
-},
-```
-
 ## Acknowledgements
 
 Thanks to [Hiroki Kokubun](https://cocopon.me) for the excellent Tweakpane library.
@@ -148,6 +132,7 @@ Astro dev issues:
 
 - [Vite optimizeDeps](https://github.com/nuxt/vite/issues/56)
 - Vite's dependency optimization only runs by default in dev mode (which is why preview builds work), and symlinked packages are excluded from dependency optimization (which is why development against a local copy of tweakpane-css did not trigger the runtime export error)
+- Obviated by migration to Tweakpane 4.
 
 Tweakpane 4:
 
