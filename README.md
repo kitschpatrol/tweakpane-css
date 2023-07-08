@@ -1,6 +1,6 @@
 # tweakpane-css
 
-<a href="https://npmjs.com/package/eleventy-plugin-parcel"><img src="https://img.shields.io/npm/v/eleventy-plugin-parcel.svg" alt="npm package"></a>
+<a href="https://npmjs.com/package/tweakpane-css"><img src="https://img.shields.io/npm/v/tweakpane-css.svg" alt="npm package"></a>
 
 🚧 Work In Progress 🚧
 
