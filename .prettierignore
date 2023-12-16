@@ -1,5 +1,5 @@
-# Git Ignore
-# Also used by CSpell and Stylelint
+# Prettier Ignore
+# Does not inherit from .gitignore
 
 # @kitschpatrol/repo-config boilerplate
 !.env.example
@@ -17,5 +17,9 @@ coverage/
 dist/
 node_modules/
 vendor/
+
+# @kitschpatrol/prettier-config boilerplate
+pnpm-lock.yaml
+package-lock.json
 
 # Customizations

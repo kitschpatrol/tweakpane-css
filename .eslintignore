@@ -1,5 +1,5 @@
-# Git Ignore
-# Also used by CSpell and Stylelint
+# ESLint Ignore
+# Does not inherit from .gitignore
 
 # @kitschpatrol/repo-config boilerplate
 !.env.example
@@ -17,5 +17,8 @@ coverage/
 dist/
 node_modules/
 vendor/
+
+# @kitschpatrol/eslint-config boilerplate
+/patches/
 
 # Customizations

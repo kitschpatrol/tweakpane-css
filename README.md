@@ -1,12 +1,10 @@
 # tweakpane-css
 
-<a href="https://npmjs.com/package/tweakpane-css"><img src="https://img.shields.io/npm/v/tweakpane-css.svg" alt="npm package"></a>
-
-🚧 Work In Progress 🚧
+[![NPM Package](https://img.shields.io/npm/v/tweakpane-css.svg)](https://npmjs.com/package/tweakpane-css)
 
 ## Overview
 
-A [Svelte](https://svelte.dev) component that automatically detects and exposes your `:root` CSS variables in a [Tweakpane](https://cocopon.github.io/tweakpane/) interface for realtime manipulation during development.
+_Tweakpane CSS_ is a script that automatically detects and exposes your `:root` CSS variables in a [Tweakpane](https://cocopon.github.io/tweakpane/) interface for realtime manipulation during development.
 
 For example, given the CSS below:
 
@@ -35,108 +33,70 @@ The "Reset" button restores the variables to the original values specified in th
 
 The Tweakpane window has been augmented a bit to allow drag-based resizing and repositioning, and may be collapsed in the "window shade" tradition via a double-click on its title bar.
 
-A separate [Astro](https://astro.build) component wrapper is included as well, since the component depends on adding an inline script to `<head>` to set overridden variables early during the page render to avoid flashes of the default values. Astro's Svelte integration does not currently support `<svelte:head>`.
-
-Note that this component relies on Tweakpane 4, which is currently in beta.
-
 ## Usage
 
-Currently, I'm only using this in Astro and Svelte projects that have their own build and bundling process — so there's not a stand-alone or vanilla JS option at this point.
+For convenient integration and FOUC prevention, Tweakpane CSS is compiled down to a minified single-file IIFE. It's critical to use it as a classic script (no `defer`, no `module`).
 
-### Installation
+You can add it to your project in three different ways:
 
-```shell
-npm install tweakpane-css
+### Locally
+
+1. Install the package:
+
+```sh
+npm install --save-dev tweakpane-css
 ```
 
-### Svelte Integration
+2. Add the script tag to the `head` of your template. Most casually, if you're only using Tweakpane CSS in local development, you can link right to the file in `node_modules`:
 
 ```html
-<script lang="ts">
-  import Tweakpane from 'tweakpane-css/src/Tweakpane.svelte'
-</script>
-
-<h1>Hello Tweakpane CSS</h1>
-<Tweakpane />
-
-<style>
-  :global(:root) {
-    --heading-color: #000000;
-  }
-
-  h1 {
-    color: var(--heading-color);
-  }
-</style>
+<script src="main.js"></script>
 ```
 
-### Astro Integration
+More robust integration will depend on your framework / build tools / bundler, but again ensure that it is invoked as a classic script.
 
-This might go in your `src/Layout/Base.astro`:
+For example, in an Astro project, you have to add an `is:raw` to the script tag to prevent modularization:
 
 ```html
----
-import Tweakpane from 'tweakpane-css/src/Tweakpane.astro'
----
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <!-- ... -->
-  </head>
-  <body>
-    <slot />
-    <Tweakpane />
-  </body>
-</html>
-
-<style>
-  :global(:root) {
-    --background-color: #000000;
-  }
-
-  body {
-    background: var(--background-color);
-  }
-</style>
+<script is:raw src="/node_modules/tweakpane-css/dist/main.js"></script>
 ```
+
+### CDN
+
+Add this script tag to the `head` of your template:
+
+```html
+<script src="https://cdnjsdelivr.net/npm/tweakpane-css"></script>
+```
+
+### Bookmarklet
+
+Drag and drop this link into your bookmarks:
+
+<a href="javascript:(function(){var script=document.createElement('script');script.src='https://cdnjsdelivr.net/npm/tweakpane-css';document.head.appendChild(script);})()">Tweakpane CSS Bookmarklet</a>
+
+_or_
+
+Create a bookmark with the url below:
+
+```js
+javascript: (function () {
+  var script = document.createElement('script')
+  script.src = 'https://cdnjsdelivr.net/npm/tweakpane-css'
+  document.head.appendChild(script)
+})()
+```
+
+Note that the bookmarklet might not work with certain sites depending on their CSP.
+
+The bookmarklet also has the disadvantage of not automatically loading across page reloads (though CSS values should persist and be restored once the bookmarklet is re-invoked).
+
+## Dev Notes
+
+Tweakpane CSS was written in [Svelte](https://svelte.dev) and leverages [svelte-tweakpane-ui](https://kitschpatrol.com/svelte-tweakpane-ui) for easy integration between Svelte and Tweakpane.
+
+I created Tweakpane CSS for my own purposes, and it might not generalize well to other use-cases. If you'd like to see additional features or compatibility measures, please [open an issue](https://github.com/kitschpatrol/tweakpane-css/issues).
 
 ## Acknowledgements
 
 Thanks to [Hiroki Kokubun](https://cocopon.me) for the excellent Tweakpane library.
-
-## Todo
-
-- [ ] Vanilla JS build
-- [ ] General clean up
-- [ ] Peer dependencies
-- [ ] Example projects
-- [ ] Two-way binding / automatic refresh?
-- [ ] Proper CSS parsing instead of regex for unit extraction
-- [ ] Improved Tweakpane control style inference from CSS unit type
-- [ ] Support for detecting variables on CSS selectors other than `:root`
-
-## Dev Notes
-
-Possible monorepo approach references:
-
-- [Accessible Astro Components](https://github.com/markteekman/accessible-astro-components)
-- [How to Make a Component That Supports Multiple Frameworks in a Monorepo](https://css-tricks.com/make-a-component-multiple-frameworks-in-a-monorepo/)
-- [Monorepo Setup with NPM and TypeScript](https://plainenglish.io/blog/monorepo-setup-with-npm-and-typescript)
-
-Componetized Tweakpane:
-
-- [Svelte Tweakpane](https://github.com/pierogis/svelte-tweakpane)
-
-Astro dev issues:
-
-- [Vite optimizeDeps](https://github.com/nuxt/vite/issues/56)
-- Vite's dependency optimization only runs by default in dev mode (which is why preview builds work), and symlinked packages are excluded from dependency optimization (which is why development against a local copy of tweakpane-css did not trigger the runtime export error)
-- Obviated by migration to Tweakpane 4.
-
-Tweakpane 4:
-
-- [Tweakpane + Core v4](https://github.com/cocopon/tweakpane/tree/v4)
-- [plugin-essentials v4](https://github.com/tweakpane/plugin-essentials/tree/v4)
-- [Breaking changes in v4](https://github.com/cocopon/tweakpane/issues/396#)
-- [Docs Repo](https://github.com/tweakpane/docs)

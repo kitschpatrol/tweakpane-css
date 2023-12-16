@@ -1,0 +1,4 @@
+{
+	"import": "@kitschpatrol/cspell-config/main.json",
+	"words": ["iife", "lokimckay", "iifes"]
+}

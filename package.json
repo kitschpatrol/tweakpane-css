@@ -1,54 +1,63 @@
 {
-  "name": "tweakpane-css",
-  "version": "2.0.0",
-  "type": "module",
-  "description": "A component for tweaking CSS variables at runtime.",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/kitschpatrol/tweakpane-css.git"
-  },
-  "homepage": "https://github.com/kitschpatrol/tweakpane-css",
-  "bugs": {
-    "url": "https://github.com/kitschpatrol/tweakpane-css/issues",
-    "email": "eric@ericmika.com"
-  },
-  "author": {
-    "name": "Eric Mika",
-    "email": "eric@ericmika.com",
-    "url": "https://ericmika.com/"
-  },
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
-  },
-  "files": [
-    "dist/*"
-  ],
-  "keywords": [
-    "tweakpane",
-    "svelte",
-    "css"
-  ],
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
-  },
-  "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^3.0.1",
-    "@tsconfig/svelte": "^5.0.2",
-    "element-ready": "^7.0.0",
-    "svelte": "^4.2.8",
-    "svelte-check": "^3.6.2",
-    "svelte-local-storage-store": "^0.6.4",
-    "svelte-tweakpane-ui": "^1.0.1",
-    "tslib": "^2.6.2",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.10"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "tweakpane-css",
+	"version": "1.0.3",
+	"type": "module",
+	"description": "A component for tweaking CSS variables at runtime.",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/kitschpatrol/tweakpane-css.git"
+	},
+	"homepage": "https://github.com/kitschpatrol/tweakpane-css",
+	"bugs": {
+		"url": "https://github.com/kitschpatrol/tweakpane-css/issues",
+		"email": "eric@ericmika.com"
+	},
+	"author": {
+		"name": "Eric Mika",
+		"email": "eric@ericmika.com",
+		"url": "https://ericmika.com/"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": ">=18.0.0",
+		"pnpm": ">=8.0.0"
+	},
+	"main": "dist/main.js",
+	"files": [
+		"dist/*"
+	],
+	"keywords": [
+		"tweakpane",
+		"svelte",
+		"css"
+	],
+	"scripts": {
+		"build": "vite build",
+		"check": "svelte-check --tsconfig ./tsconfig.json",
+		"dev": "npm-run-all --parallel dev:*",
+		"dev:build": "vite build --watch",
+		"dev:serve": "vite",
+		"format": "shared-config --fix",
+		"lint": "shared-config --check",
+		"preview": "vite preview",
+		"release": "pnpm build && pnpm bumpp --commit 'Release: %s' && pnpm publish --otp $(op read 'op://Personal/Npmjs/one-time password?attribute=otp')"
+	},
+	"devDependencies": {
+		"@kitschpatrol/shared-config": "^3.0.4",
+		"@sveltejs/vite-plugin-svelte": "^3.0.1",
+		"@tsconfig/svelte": "^5.0.2",
+		"bumpp": "^9.2.1",
+		"element-ready": "^7.0.0",
+		"npm-run-all": "^4.1.5",
+		"svelte": "^4.2.8",
+		"svelte-check": "^3.6.2",
+		"svelte-local-storage-store": "^0.6.4",
+		"svelte-tweakpane-ui": "^1.0.1",
+		"tslib": "^2.6.2",
+		"typescript": "^5.3.3",
+		"vite": "^5.0.10"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }
