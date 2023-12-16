@@ -66,14 +66,14 @@ For example, in an Astro project, you have to add an `is:raw` to the script tag 
 Add this script tag to the `head` of your template:
 
 ```html
-<script src="https://cdnjsdelivr.net/npm/tweakpane-css"></script>
+<script src="https://cdn.jsdelivr.net/npm/tweakpane-css"></script>
 ```
 
 ### Bookmarklet
 
 Drag and drop this link into your bookmarks:
 
-<a href="javascript:(function(){var script=document.createElement('script');script.src='https://cdnjsdelivr.net/npm/tweakpane-css';document.head.appendChild(script);})()">Tweakpane CSS Bookmarklet</a>
+<a href="javascript:(function(){var script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/tweakpane-css';document.head.appendChild(script);})()">Tweakpane CSS Bookmarklet</a>
 
 _or_
 
@@ -82,7 +82,7 @@ Create a bookmark with the url below:
 ```js
 javascript: (function () {
   var script = document.createElement('script')
-  script.src = 'https://cdnjsdelivr.net/npm/tweakpane-css'
+  script.src = 'https://cdn.jsdelivr.net/npm/tweakpane-css'
   document.head.appendChild(script)
 })()
 ```
