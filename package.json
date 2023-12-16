@@ -1,71 +1,52 @@
 {
   "name": "tweakpane-css",
-  "version": "1.0.3",
+  "version": "2.0.0",
+  "type": "module",
   "description": "A component for tweaking CSS variables at runtime.",
   "repository": {
     "type": "git",
     "url": "git://github.com/kitschpatrol/tweakpane-css.git"
   },
   "homepage": "https://github.com/kitschpatrol/tweakpane-css",
-  "bugs": "https://github.com/kitschpatrol/tweakpane-css/issues",
+  "bugs": {
+    "url": "https://github.com/kitschpatrol/tweakpane-css/issues",
+    "email": "eric@ericmika.com"
+  },
   "author": {
     "name": "Eric Mika",
     "email": "eric@ericmika.com",
     "url": "https://ericmika.com/"
   },
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
   "files": [
-    "src"
+    "dist/*"
   ],
   "keywords": [
     "tweakpane",
     "svelte",
-    "astro",
     "css"
   ],
   "scripts": {
-    "format": "run-s --print-label format:*",
-    "format:astro": "astro sync",
-    "format:eslint": "eslint --fix .",
-    "format:prettier": "prettier --write .",
-    "lint": "run-p --print-label lint:*",
-    "lint:astro": "astro check",
-    "lint:eslint": "eslint .",
-    "lint:markdown": "markdownlint **/*.{md,mdx} --ignore node_modules",
-    "lint:prettier": "prettier --check .",
-    "lint:typescript": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@tweakpane/core": "^2.0.0-beta.1",
-    "@tweakpane/plugin-essentials": "^0.2.0-beta.0",
-    "svelte-local-storage-store": "^0.5.0",
-    "tweakpane": "^4.0.0-beta.1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@astrojs/svelte": "^3.1.0",
-    "@sveltejs/vite-plugin-svelte": "^2.4.2",
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
-    "@typescript-eslint/parser": "^5.61.0",
-    "astro": "^2.8.0",
-    "astro-eslint-parser": "^0.14.0",
-    "eslint": "^8.44.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-astro": "^0.27.2",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-svelte": "^2.32.2",
-    "markdownlint": "^0.29.0",
-    "markdownlint-cli": "^0.35.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.8.8",
-    "prettier-plugin-astro": "^0.10.0",
-    "prettier-plugin-organize-imports": "^3.2.2",
-    "prettier-plugin-pkg": "^0.17.1",
-    "prettier-plugin-sh": "^0.12.8",
-    "prettier-plugin-svelte": "^2.10.1",
-    "stylelint": "^15.10.1",
-    "stylelint-config-html": "^1.1.0",
-    "stylelint-config-standard": "^34.0.0",
-    "svelte": "^4.0.5"
+    "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "@tsconfig/svelte": "^5.0.2",
+    "element-ready": "^7.0.0",
+    "svelte": "^4.2.8",
+    "svelte-check": "^3.6.2",
+    "svelte-local-storage-store": "^0.6.4",
+    "svelte-tweakpane-ui": "^1.0.1",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
   },
   "publishConfig": {
     "access": "public"
