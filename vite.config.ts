@@ -2,6 +2,8 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { defineConfig } from 'vite'
 
+process.env.BROWSER = 'chromium'
+
 export default defineConfig(({ mode }) => {
 	const production = mode === 'production'
 
@@ -17,13 +19,16 @@ export default defineConfig(({ mode }) => {
 			rollupOptions: {
 				input: `src/main.ts`,
 				output: {
-					assetFileNames: `[name].[ext]`,
 					chunkFileNames: `[name].js`,
+					assetFileNames: `[name].[ext]`,
 					dir: 'dist',
 					entryFileNames: `[name].js`,
 					format: 'iife',
 				},
 			},
+		},
+		server: {
+			open: true,
 		},
 	}
 })
