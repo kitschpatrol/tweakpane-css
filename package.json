@@ -1,6 +1,6 @@
 {
 	"name": "tweakpane-css",
-	"version": "2.0.1",
+	"version": "2.0.2",
 	"type": "module",
 	"description": "A component for tweaking CSS variables at runtime.",
 	"repository": {
