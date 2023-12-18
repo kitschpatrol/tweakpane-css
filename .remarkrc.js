@@ -5,6 +5,7 @@ const localConfig = {
 	plugins: overrideRules(sharedConfig.plugins, [['remark-lint-no-html', false]]),
 	plugins: overrideRules(sharedConfig.plugins, [['remark-lint-no-emphasis-as-heading', false]]),
 	plugins: overrideRules(sharedConfig.plugins, [['remark-lint-no-emphasis-as-heading', false]]),
+	plugins: overrideRules(sharedConfig.plugins, [['remark-lint-fenced-code-flag', false]]),
 }
 
 export default localConfig
