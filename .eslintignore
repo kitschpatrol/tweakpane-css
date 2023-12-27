@@ -15,6 +15,7 @@ bower_components/
 build/
 coverage/
 dist/
+env.d.ts
 node_modules/
 vendor/
 

@@ -1,8 +1,9 @@
+/* eslint-disable perfectionist/sort-objects */
 /* @type {import('eslint').Linter.Config} */
 module.exports = {
-	extends: ['@kitschpatrol/eslint-config'],
-	parserOptions: {
-		project: 'tsconfig.eslint.json',
-	},
 	root: true,
+	extends: ['@kitschpatrol/eslint-config'],
+	rules: {
+		'@html-eslint/no-inline-styles': 'off',
+	},
 }

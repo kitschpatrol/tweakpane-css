@@ -1,8 +1,5 @@
 {
 	"prettier.enable": true,
-	"[astro]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
 	"[gitignore]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
@@ -25,17 +22,28 @@
 		"typescript",
 		"typescriptreact",
 		"svelte",
-		"astro",
 		"markdown",
-		"mdx"
+		"mdx",
+		"html"
 	],
 	"prettier.documentSelectors": [
-		"**/*.astro",
 		"**/*.svelte",
 		"**/.prettierignore",
 		"**/.npmrc",
-		"**/.eslintignore"
+		"**/.eslintignore",
+		"**/*.rb"
 	],
 	"stylelint.enable": true,
-	"stylelint.validate": ["css", "html", "svelte", "astro"]
+	"stylelint.validate": ["css", "html", "svelte"],
+	"cSpell.workspaceRootPath": ".",
+	"[ruby]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.expand": false,
+	"explorer.fileNesting.patterns": {
+		".env": ".env.*",
+		"package.json": ".*.js, .*.json, .*.cjs, .*rc, .*ignore, pnpm-lock.yaml, pnpm-workspace.yaml",
+		"readme.md": "license*, changelog*"
+	}
 }
