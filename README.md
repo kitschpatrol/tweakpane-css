@@ -4,7 +4,7 @@
 
 ## Overview
 
-_Tweakpane CSS_ is a script that automatically detects and exposes your `:root` CSS variables in a [Tweakpane](https://cocopon.github.io/tweakpane/) interface for realtime manipulation during development.
+_Tweakpane CSS_ is a script that automatically detects and exposes your `:root` CSS variables in a [Tweakpane](https://tweakpane.github.io/docs/) interface for realtime manipulation during development.
 
 For example, given the CSS below:
 
