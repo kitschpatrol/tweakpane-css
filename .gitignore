@@ -2,11 +2,11 @@
 # Also used by CSpell and Stylelint
 
 # @kitschpatrol/repo-config boilerplate
-!.env.example
 .astro/
 .DS_Store
 .env
 .env.*
+!.env.example
 .svelte-kit/
 {tmp,temp}/
 **/*.min.js
