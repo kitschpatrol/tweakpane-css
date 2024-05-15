@@ -18,6 +18,7 @@
 		"url": "https://ericmika.com/"
 	},
 	"license": "MIT",
+	"packageManager": "pnpm@9.1.1+sha512.14e915759c11f77eac07faba4d019c193ec8637229e62ec99eefb7cf3c3b75c64447882b7c485142451ee3a6b408059cdfb7b7fa0341b975f12d0f7629c71195",
 	"engines": {
 		"node": ">=18.0.0",
 		"pnpm": ">=8.0.0"
@@ -45,19 +46,19 @@
 		"release": "pnpm build && pnpm bumpp --commit 'Release: %s' && pnpm publish --otp $(op read 'op://Personal/Npmjs/one-time password?attribute=otp')"
 	},
 	"devDependencies": {
-		"@kitschpatrol/shared-config": "^4.5.0",
-		"@sveltejs/vite-plugin-svelte": "^3.0.2",
-		"@tsconfig/svelte": "^5.0.2",
-		"bumpp": "^9.3.0",
+		"@kitschpatrol/shared-config": "^4.6.3",
+		"@sveltejs/vite-plugin-svelte": "^3.1.0",
+		"@tsconfig/svelte": "^5.0.4",
+		"bumpp": "^9.4.1",
 		"element-ready": "^7.0.0",
 		"npm-run-all": "^4.1.5",
-		"svelte": "^4.2.12",
-		"svelte-check": "^3.6.6",
+		"svelte": "^4.2.17",
+		"svelte-check": "^3.7.1",
 		"svelte-local-storage-store": "^0.6.4",
-		"svelte-tweakpane-ui": "^1.2.1",
+		"svelte-tweakpane-ui": "^1.2.6",
 		"tslib": "^2.6.2",
-		"typescript": "^5.3.3",
-		"vite": "^5.1.4"
+		"typescript": "^5.4.5",
+		"vite": "^5.2.11"
 	},
 	"publishConfig": {
 		"access": "public"
