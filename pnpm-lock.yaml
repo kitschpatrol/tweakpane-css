@@ -47,6 +47,9 @@ importers:
       vite:
         specifier: ^5.2.11
         version: 5.2.11(@types/node@20.12.12)
+      vite-plugin-live-reload:
+        specifier: ^3.0.3
+        version: 3.0.3(vite@5.2.11(@types/node@20.12.12))
 
 packages:
 
@@ -4312,6 +4315,11 @@ packages:
 
   vfile@6.0.1:
     resolution: {integrity: sha512-1bYqc7pt6NIADBJ98UiG0Bn/CHIVOoZ/IyEkqIruLg0mE1BKzkOXY2D6CSqQIcKqgadppE5lrxgWXJmXd7zZJw==}
+
+  vite-plugin-live-reload@3.0.3:
+    resolution: {integrity: sha512-ce1ygNPmfVdiO6SyjpephroZiK+X5+BFetkceD/FFOYZEPoVSydJRfKT2JPaL4/D3C3NwqJvtPjnla1GSa264A==}
+    peerDependencies:
+      vite: ^4.0.0 || ^5.0.0
 
   vite@5.2.11:
     resolution: {integrity: sha512-HndV31LWW05i1BLPMUCE1B9E9GFbOu1MbenhS58FuK6owSO5qHm7GiCotrNY1YE5rMeQSFBGmT5ZaLEjFizgiQ==}
@@ -10040,6 +10048,12 @@ snapshots:
       '@types/unist': 3.0.2
       unist-util-stringify-position: 4.0.0
       vfile-message: 4.0.2
+
+  vite-plugin-live-reload@3.0.3(vite@5.2.11(@types/node@20.12.12)):
+    dependencies:
+      chokidar: 3.6.0
+      picocolors: 1.0.1
+      vite: 5.2.11(@types/node@20.12.12)
 
   vite@5.2.11(@types/node@20.12.12):
     dependencies:

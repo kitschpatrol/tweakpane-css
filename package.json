@@ -58,7 +58,8 @@
 		"svelte-tweakpane-ui": "^1.2.6",
 		"tslib": "^2.6.2",
 		"typescript": "^5.4.5",
-		"vite": "^5.2.11"
+		"vite": "^5.2.11",
+		"vite-plugin-live-reload": "^3.0.3"
 	},
 	"publishConfig": {
 		"access": "public"

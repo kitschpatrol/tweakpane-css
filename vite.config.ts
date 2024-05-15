@@ -1,6 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { defineConfig } from 'vite'
+import liveReload from 'vite-plugin-live-reload'
 
 process.env.BROWSER = 'chromium'
 
@@ -13,6 +14,7 @@ export default defineConfig(({ mode }) => {
 				compilerOptions: { dev: !production },
 				emitCss: false,
 			}),
+			liveReload('dist/main.js'),
 		],
 		build: {
 			minify: true,
@@ -29,6 +31,9 @@ export default defineConfig(({ mode }) => {
 		},
 		server: {
 			open: true,
+			watch: {
+				awaitWriteFinish: true,
+			},
 		},
 	}
 })
