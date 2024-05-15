@@ -32,7 +32,7 @@ For example, given the CSS below:
 
 The following Tweakpane will be automatically generated and displayed over your page:
 
-<img src="./screenshot.webp" width="401px" alt="Tweakpane CSS panel" />
+<img src="./example-screenshot.webp" width="401px" alt="Tweakpane CSS panel" />
 
 Changes to variables are applied immediately, and then persisted to local storage. Any variable changes are automatically applied across page refreshes.
 
