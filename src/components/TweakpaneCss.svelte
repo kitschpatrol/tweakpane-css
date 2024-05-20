@@ -90,8 +90,10 @@
 	export let options: Options = $optionsStore
 
 	// Store folder states
-
-	expandedStateStore = persisted('css-expanded-state', {})
+	const optionsExpandedStateKey = 'tweakpane-css-options-05860cf2958c'
+	expandedStateStore = persisted('css-expanded-state', {
+		optionsExpandedStateKey: false,
+	})
 
 	// Helper functions
 	function parseNumberOrReturnOriginal(text: string): number | string {
@@ -337,7 +339,7 @@
 		{/each}
 		<Separator />
 		<ButtonGrid buttons={['Copy', 'Reset']} on:click={handleClick} />
-		<Folder expanded={false} title="Tweakpane CSS Options">
+		<Folder bind:expanded={$expandedStateStore[optionsExpandedStateKey]} title="Options">
 			<AutoObject bind:object={$optionsStore} />
 			<Button on:click={resetOptions} title="Reset Options" />
 		</Folder>
