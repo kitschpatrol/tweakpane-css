@@ -28,6 +28,14 @@
 </script>
 
 <script lang="ts">
+	import {
+		arraysEqual,
+		cleanName,
+		copyToClipboard,
+		getHash,
+		parseNumberOrReturnOriginal,
+		stripPrefix,
+	} from '../utilities'
 	import { onMount, tick } from 'svelte'
 	import { persisted } from 'svelte-local-storage-store'
 	import { Button } from 'svelte-tweakpane-ui'
@@ -96,36 +104,12 @@
 	})
 
 	// Helper functions
-	function parseNumberOrReturnOriginal(text: string): number | string {
-		// Also strips suffixed units
-		const parsed = Number.parseFloat(text)
-		return Number.isNaN(parsed) ? text : parsed
-	}
-
-	function getHash(children: ControlPlan[]): string {
-		const rawKeyString = children.map((child) => child.key).join('')
-		// TODO Hash the key string
-		return rawKeyString
-	}
-
-	async function copyToClipboard(text: string): Promise<void> {
-		try {
-			await navigator.clipboard.writeText(text)
-			console.log(`${logPrefix} Copied to clipboard:\n${text}`)
-		} catch (error) {
-			console.error(`${logPrefix} Failed to copy text: ${String(error)}`)
-		}
-	}
 
 	function stripLabelPrefix<T extends Plan>(plan: T): T {
 		return {
 			...plan,
 			label: stripPrefix(plan.label),
 		}
-	}
-
-	function stripPrefix(name: string): string {
-		return name.split(' ').slice(1).join(' ')
 	}
 
 	function getControlPlanFromStore(
@@ -201,13 +185,6 @@
 			.catch(console.error)
 	}
 
-	function cleanName(name: string): string {
-		return name
-			.replace('--', '')
-			.replaceAll('-', ' ')
-			.replaceAll(/\w\S*/g, (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase())
-	}
-
 	onMount(() => {
 		// Get all the root css variables
 		const rootCssVariables: string[] = [...document.styleSheets]
@@ -244,7 +221,7 @@
 	function handleClick(event: ButtonGridClickEvent) {
 		switch (event.detail.label) {
 			case 'Copy': {
-				copyCss()
+				copyCssToClipboard()
 				break
 			}
 
@@ -259,7 +236,7 @@
 		}
 	}
 
-	function copyCss() {
+	function copyCssToClipboard() {
 		const directives = Object.entries($cssVariableStore).map(([variableName, value]) => {
 			const units = getUnits(
 				window.getComputedStyle(document.documentElement).getPropertyValue(variableName),
@@ -267,7 +244,7 @@
 			return `\t${variableName}: ${value}${units ? `${units}` : ''};\n`
 		})
 
-		void copyToClipboard(`:root {\n${directives.join('')}}`)
+		void copyToClipboard(`:root {\n${directives.join('')}}`, logPrefix)
 	}
 
 	function resetCssVariables() {
@@ -284,10 +261,6 @@
 		}
 
 		$optionsStore = defaultOptions
-	}
-
-	function arraysEqual<T>(a: T[], b: T[]): boolean {
-		return a.length === b.length && a.every((value, index) => value === b[index])
 	}
 
 	function updateCssVariableKeys(store: Record<string, number | string>) {
