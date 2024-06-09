@@ -48,11 +48,7 @@
 	import Separator from 'svelte-tweakpane-ui/Separator.svelte'
 	import { type Writable } from 'svelte/store'
 
-	// Set up stores for local persistence
-	let cssVariableStore: Writable<Record<string, number | string>>
-	let optionsStore: Writable<Options>
-	let expandedStateStore: Writable<ExpandedState>
-
+	// Types
 	type Options = {
 		autoFolders?: boolean
 		includeCalculated?: boolean
@@ -89,13 +85,19 @@
 		sortNames: false,
 	}
 
+	// Props
+	export let excludeProperties: string[] = []
+	export let options: Options = defaultOptions
+
 	// Stores
 
-	// Set up persistent local options store, with defaults
-	optionsStore = persisted('css-options', defaultOptions)
+	// Set up stores for local persistence
+	let cssVariableStore: Writable<Record<string, number | string>>
+	let optionsStore: Writable<Options>
+	let expandedStateStore: Writable<ExpandedState>
 
-	// Allow props to override
-	export let options: Options = $optionsStore
+	// Set up persistent local options store, with defaults
+	optionsStore = persisted('css-options', options)
 
 	// Store folder states
 	const optionsExpandedStateKey = 'tweakpane-css-options-05860cf2958c'
@@ -195,6 +197,13 @@
 			)
 			.flatMap((cssRule: CSSStyleRule) => [...cssRule.style])
 			.filter((style: string) => style.startsWith('--'))
+			// Allow exclusions via props
+			.filter(
+				(style: string) =>
+					!excludeProperties.some(
+						(excludeProperty) => cleanName(excludeProperty) === cleanName(style),
+					),
+			)
 
 		// Set up the persistent local store
 		cssVariableStore = persisted(
@@ -260,7 +269,7 @@
 			$expandedStateStore[key] = true
 		}
 
-		$optionsStore = defaultOptions
+		$optionsStore = options
 	}
 
 	function updateCssVariableKeys(store: Record<string, number | string>) {
@@ -290,7 +299,7 @@
 	let controlPlan: Plan[] = []
 	let cssVariableKeys: string[] = []
 
-	$: $optionsStore = options
+	// $: $optionsStore = options
 	$: updateCssVariableKeys($cssVariableStore)
 	$: updatePlanForStore(cssVariableKeys, $optionsStore)
 </script>
