@@ -37,7 +37,7 @@
 		stripPrefix,
 	} from '../utilities'
 	import { onMount, tick } from 'svelte'
-	import { persisted } from 'svelte-local-storage-store'
+	import { persisted } from 'svelte-persisted-store'
 	import { Button } from 'svelte-tweakpane-ui'
 	import AutoObject from 'svelte-tweakpane-ui/AutoObject.svelte'
 	import AutoValue from 'svelte-tweakpane-ui/AutoValue.svelte'
@@ -84,24 +84,16 @@
 		showUnits: true,
 		sortNames: false,
 	}
+	const optionsExpandedStateKey = 'tweakpane-css-options-05860cf2958c'
 
 	// Props
 	export let exclude: string[] = []
 	export let options: Options = defaultOptions
 
 	// Stores
-
-	// Set up stores for local persistence
 	let cssVariableStore: Writable<Record<string, number | string>>
-	let optionsStore: Writable<Options>
-	let expandedStateStore: Writable<ExpandedState>
-
-	// Set up persistent local options store, with defaults
-	optionsStore = persisted('css-options', options)
-
-	// Store folder states
-	const optionsExpandedStateKey = 'tweakpane-css-options-05860cf2958c'
-	expandedStateStore = persisted('css-expanded-state', {
+	let optionsStore: Writable<Options> = persisted('css-options', options)
+	let expandedStateStore: Writable<ExpandedState> = persisted('css-expanded-state', {
 		optionsExpandedStateKey: false,
 	})
 
