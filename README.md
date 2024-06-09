@@ -114,7 +114,7 @@ The property names are normalized and case-insensitive, so you may write them wi
 
 #### `options`
 
-Tweakpane CSS takes some configuration options:
+Tweakpane CSS itself takes some configuration options:
 
 ```ts
 export let options: {
@@ -134,15 +134,15 @@ Organize properties into folders based on common name prefixes. (For example, `-
 
 Whether to include properties with `calc(...)` in their values in Tweakpane CSS.
 
-#### prettyNames
+##### prettyNames
 
 Whether to massage the property names into something a bit easier on the eyes. `--row-gap`, for example, would become `Row Gap`.
 
-#### showUnits
+##### showUnits
 
 Show CSS value units in a parenthetical next to the label.
 
-#### sortNames
+##### sortNames
 
 Sort the custom properties in alphabetic order, rather than the order they are found in the stylesheet.
 
@@ -170,7 +170,7 @@ Tweakpane CSS was written in [Svelte](https://svelte.dev) and leverages [svelte-
 
 I created Tweakpane CSS for my own purposes, and it might not generalize well to other use-cases. If you'd like to see additional features or compatibility measures, please [open an issue](https://github.com/kitschpatrol/tweakpane-css/issues).
 
-## Acknowledgements
+## Acknowledgments
 
 Thanks to [Hiroki Kokubun](https://cocopon.me) for the excellent Tweakpane library.
 
