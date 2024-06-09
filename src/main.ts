@@ -11,7 +11,7 @@ import qs from 'qs'
 // Qs vs query-string is tricky, but going with qs for now so we don't have to
 // flatten the options object
 // Full query string of TweakpaneCSS Svelte component props:
-// ?excludeProperties=transform,transition,animation&options.autoFolders=true&options.includeCalculated=true&options.prettyNames=true&options.showUnits=true&options.sortNames=true
+// ?exclude=transform,transition,animation&options.autoFolders=true&options.includeCalculated=true&options.prettyNames=true&options.showUnits=true&options.sortNames=true
 // qs stringify options: { allowDots: true, arrayFormat: 'comma', encode: false }
 const queryString = new URL((document.currentScript as HTMLScriptElement).src).search
 

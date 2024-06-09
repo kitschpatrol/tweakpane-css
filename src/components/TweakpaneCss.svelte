@@ -86,7 +86,7 @@
 	}
 
 	// Props
-	export let excludeProperties: string[] = []
+	export let exclude: string[] = []
 	export let options: Options = defaultOptions
 
 	// Stores
@@ -200,9 +200,7 @@
 			// Allow exclusions via props
 			.filter(
 				(style: string) =>
-					!excludeProperties.some(
-						(excludeProperty) => cleanName(excludeProperty) === cleanName(style),
-					),
+					!exclude.some((excludeProperty) => cleanName(excludeProperty) === cleanName(style)),
 			)
 
 		// Set up the persistent local store
