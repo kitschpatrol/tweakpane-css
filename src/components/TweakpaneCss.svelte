@@ -8,7 +8,9 @@
 
 	export function preload(): void {
 		// Apply any modified styles
+		// eslint-disable-next-line n/no-unsupported-features/node-builtins
 		if (typeof localStorage !== 'undefined') {
+			// eslint-disable-next-line n/no-unsupported-features/node-builtins
 			const cssVariables = localStorage.getItem('css')
 			if (cssVariables) {
 				for (const [variableName, value] of Object.entries(
@@ -28,6 +30,17 @@
 </script>
 
 <script lang="ts">
+	import type { ButtonGridClickEvent } from 'svelte-tweakpane-ui/ButtonGrid.svelte'
+	import { onMount, tick } from 'svelte'
+	import { type Writable } from 'svelte/store'
+	import { persisted } from 'svelte-persisted-store'
+	import { Button } from 'svelte-tweakpane-ui'
+	import AutoObject from 'svelte-tweakpane-ui/AutoObject.svelte'
+	import AutoValue from 'svelte-tweakpane-ui/AutoValue.svelte'
+	import ButtonGrid from 'svelte-tweakpane-ui/ButtonGrid.svelte'
+	import Folder from 'svelte-tweakpane-ui/Folder.svelte'
+	import Pane from 'svelte-tweakpane-ui/Pane.svelte'
+	import Separator from 'svelte-tweakpane-ui/Separator.svelte'
 	import {
 		arraysEqual,
 		cleanName,
@@ -36,17 +49,6 @@
 		parseNumberOrReturnOriginal,
 		stripPrefix,
 	} from '../utilities'
-	import { onMount, tick } from 'svelte'
-	import { persisted } from 'svelte-persisted-store'
-	import { Button } from 'svelte-tweakpane-ui'
-	import AutoObject from 'svelte-tweakpane-ui/AutoObject.svelte'
-	import AutoValue from 'svelte-tweakpane-ui/AutoValue.svelte'
-	import ButtonGrid from 'svelte-tweakpane-ui/ButtonGrid.svelte'
-	import type { ButtonGridClickEvent } from 'svelte-tweakpane-ui/ButtonGrid.svelte'
-	import Folder from 'svelte-tweakpane-ui/Folder.svelte'
-	import Pane from 'svelte-tweakpane-ui/Pane.svelte'
-	import Separator from 'svelte-tweakpane-ui/Separator.svelte'
-	import { type Writable } from 'svelte/store'
 
 	// Types
 	type Options = {
@@ -176,7 +178,9 @@
 			.then(() => {
 				controlPlan = getControlPlanFromStore(cssVariableKeys, options)
 			})
-			.catch(console.error)
+			.catch((error: unknown) => {
+				console.error(`${logPrefix} Error updating plan:`, error)
+			})
 	}
 
 	onMount(() => {
@@ -248,7 +252,9 @@
 
 	function resetCssVariables() {
 		console.log(`${logPrefix} Clearing changes to CSS Variables`)
+		// eslint-disable-next-line n/no-unsupported-features/node-builtins
 		if (typeof localStorage !== 'undefined') {
+			// eslint-disable-next-line n/no-unsupported-features/node-builtins
 			localStorage.removeItem('css')
 			location.reload()
 		}

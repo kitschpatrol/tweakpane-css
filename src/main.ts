@@ -4,9 +4,9 @@
 
 // IIFE wrapper for Tweakpane CSS
 
-import TweakpaneCss, { preload } from './components/TweakpaneCss.svelte'
 import elementReady from 'element-ready'
 import qs from 'qs'
+import TweakpaneCss, { preload } from './components/TweakpaneCss.svelte'
 
 // Qs vs query-string is tricky, but going with qs for now so we don't have to
 // flatten the options object
