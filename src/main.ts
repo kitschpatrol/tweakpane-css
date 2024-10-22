@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable unicorn/prefer-top-level-await */
-/* eslint-disable no-new */
 
 // IIFE wrapper for Tweakpane CSS
 
 import elementReady from 'element-ready'
 import qs from 'qs'
+import { mount } from 'svelte'
 import TweakpaneCss, { preload } from './components/TweakpaneCss.svelte'
 
 // Qs vs query-string is tricky, but going with qs for now so we don't have to
@@ -58,7 +58,7 @@ void elementReady('body').then((element) => {
 		ignoreQueryPrefix: true,
 	})
 
-	new TweakpaneCss({
+	mount(TweakpaneCss, {
 		props,
 		target: element as HTMLElement,
 	})
