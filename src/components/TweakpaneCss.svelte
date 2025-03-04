@@ -8,9 +8,8 @@
 
 	export function preload(): void {
 		// Apply any modified styles
-		// eslint-disable-next-line n/no-unsupported-features/node-builtins
+
 		if (typeof localStorage !== 'undefined') {
-			// eslint-disable-next-line n/no-unsupported-features/node-builtins
 			const cssVariables = localStorage.getItem('css')
 			if (cssVariables) {
 				for (const [variableName, value] of Object.entries(
@@ -215,7 +214,7 @@
 		for (const key of Object.keys(cssVariableStore)) {
 			if (!rootCssVariables.includes(key)) {
 				// TODO revisit $?
-				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+
 				delete $cssVariableStore[key]
 			}
 		}
@@ -253,9 +252,8 @@
 
 	function resetCssVariables() {
 		console.log(`${logPrefix} Clearing changes to CSS Variables`)
-		// eslint-disable-next-line n/no-unsupported-features/node-builtins
+
 		if (typeof localStorage !== 'undefined') {
-			// eslint-disable-next-line n/no-unsupported-features/node-builtins
 			localStorage.removeItem('css')
 			location.reload()
 		}
@@ -307,7 +305,7 @@
 	$: updatePlanForStore(cssVariableKeys, $optionsStore)
 </script>
 
-<Pane localStoreId="tweakpane-css" position={'draggable'} title="Tweakpane CSS">
+<Pane localStoreId="tweakpane-css" position="draggable" title="Tweakpane CSS">
 	{#if cssVariableStore}
 		{#each controlPlan as plan}
 			{#if plan.type === 'folder'}

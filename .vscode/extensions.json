@@ -6,6 +6,5 @@
 		"stylelint.vscode-stylelint",
 		"svelte.svelte-vscode",
 		"unifiedjs.vscode-mdx"
-	],
-	"unwantedRecommendations": []
+	]
 }

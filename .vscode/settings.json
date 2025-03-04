@@ -11,7 +11,8 @@
 	},
 	"cSpell.enabled": true,
 	"editor.codeActionsOnSave": {
-		"source.fixAll": "explicit"
+		"source.fixAll": "explicit",
+		"source.organizeImports": "never"
 	},
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
@@ -24,17 +25,26 @@
 		"svelte",
 		"markdown",
 		"mdx",
-		"html"
+		"html",
+		"astro",
+		"json",
+		"json5",
+		"jsonc",
+		"toml",
+		"xml",
+		"yaml"
 	],
 	"prettier.documentSelectors": [
 		"**/*.svelte",
 		"**/.prettierignore",
 		"**/.npmrc",
 		"**/.eslintignore",
-		"**/*.rb"
+		"**/*.rb",
+		"**/.node-version",
+		"**/*.astro"
 	],
 	"stylelint.enable": true,
-	"stylelint.validate": ["css", "html", "svelte"],
+	"stylelint.validate": ["css", "html", "svelte", "astro"],
 	"cSpell.workspaceRootPath": ".",
 	"[ruby]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -43,7 +53,14 @@
 	"explorer.fileNesting.expand": false,
 	"explorer.fileNesting.patterns": {
 		".env": ".env.*",
-		"package.json": ".*.cjs, .*.js, .*.json, .*.mjs, .*.toml, .*.ts, .*.yaml, .*.yml, .*ignore, .*rc, *config.cjs, *config.js, *config.json, *config.mjs, *config.toml, *config.ts, *config.yaml, *config.yml, lerna.json, netlify.toml, package-lock.json, pnpm-lock.yaml, pnpm-workspace.yaml, pnpm*, turbo.json, vercel.json, workspace*, wrangler.toml, yarn.lock, yarn*",
-		"readme.md": "authors*, backers*, changelog*, citation*, code_of_conduct*, codeowners*, contributing*, contributors*, copying*, credits*, governance*, history*, license*, maintainers*, release_notes*, security*, sponsors*"
+		"package.json": ".*ignore, .*rc, .*.js, .*.mjs, .*.cjs, .*.ts, .*.mts, .*.cts, .*.json, .*.jsonc, .*.json5, .*.yml, .*.yaml, *config.js, *config.mjs, *config.cjs, *config.ts, *config.mts, *config.cts, *config.json, *config.jsonc, *config.json5, *config.yml, *config.yaml, pnpm*, workspace*, yarn*, lerna.json, netlify.toml, package-lock.json, turbo.json, vercel.json, wrangler.toml, yarn.lock",
+		"readme.md": "authors*, backers*, changelog*, citation*, code_of_conduct*, contributing*, contributors*, copying*, credits*, governance*, history*, license*, maintainers*, release_notes*, security*, sponsors*"
+	},
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"eslint.runtime": "node",
+	"eslint.useFlatConfig": true,
+	"[astro]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	}
 }

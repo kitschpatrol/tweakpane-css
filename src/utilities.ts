@@ -1,10 +1,12 @@
+/* eslint-disable jsdoc/require-jsdoc */
+
 export function stripPrefix(name: string): string {
 	return name.split(' ').slice(1).join(' ')
 }
 
 export async function copyToClipboard(text: string, logPrefix = ''): Promise<void> {
 	try {
-		// eslint-disable-next-line n/no-unsupported-features/node-builtins
+		// eslint-disable-next-line node/no-unsupported-features/node-builtins
 		await navigator.clipboard.writeText(text)
 		console.log(`${logPrefix} Copied to clipboard:\n${text}`)
 	} catch (error) {

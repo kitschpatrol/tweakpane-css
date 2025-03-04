@@ -150,11 +150,11 @@ Sort the custom properties in alphabetic order, rather than the order they are f
 
 Tweakpane CSS is normally used through an IIFE-compiled script, which by nature does not have the affordances for passing properties that we enjoy on proper components.
 
-Instead, props may be passed via query parameters on the `src` url in the `<script>` tag there Tweakpane CSS is loaded.
+Instead, props may be passed via query parameters on the `src` url in the `<script>` tag where Tweakpane CSS is loaded.
 
 The query parameters are parsed using [qs](https://github.com/ljharb/qs), which does its best to map human-friendly query strings to moderately complex property objects. The qs parser is configured with comma-separated arrays and dot notation for assigning object values, so a query string for the above properties might look like:
 
-```js
+```plaintext
 ?exclude=some-unwanted-property&options.autoFolders=true&options.includeCalculated=true&options.sortNames=true
 ```
 

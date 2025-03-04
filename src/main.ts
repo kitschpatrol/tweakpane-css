@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable import/no-named-as-default-member */
+/* eslint-disable ts/no-unsafe-call */
 /* eslint-disable unicorn/prefer-top-level-await */
 
 // IIFE wrapper for Tweakpane CSS
 
 import elementReady from 'element-ready'
+// TODO Revisit this
+// eslint-disable-next-line depend/ban-dependencies
 import qs from 'qs'
 import { mount } from 'svelte'
 import TweakpaneCss, { preload } from './components/TweakpaneCss.svelte'
@@ -35,6 +38,8 @@ void elementReady('body').then((element) => {
 		) {
 			if (
 				type === 'value' &&
+				// Revisit these warnings once we have tests
+				// eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/no-useless-non-capturing-group, regexp/prefer-question-quantifier, regexp/no-empty-alternative
 				/^(?:-[1-9](?:\d{0,2}(?:,\d{3})+|\d*)|(?:0|(?:[1-9](?:\d{0,2}(?:,\d{3})+|\d*))))(?:.\d+|)$/.test(
 					string_,
 				)

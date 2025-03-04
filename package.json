@@ -1,35 +1,30 @@
 {
 	"name": "tweakpane-css",
 	"version": "2.2.2",
-	"type": "module",
 	"description": "Detect and tweak CSS variables at runtime.",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/kitschpatrol/tweakpane-css.git"
-	},
-	"homepage": "https://github.com/kitschpatrol/tweakpane-css",
-	"bugs": "https://github.com/kitschpatrol/tweakpane-css/issues",
-	"author": {
-		"name": "Eric Mika",
-		"email": "eric@ericmika.com",
-		"url": "https://ericmika.com/"
-	},
-	"license": "MIT",
-	"packageManager": "pnpm@9.12.2",
-	"engines": {
-		"node": ">=20.0.0",
-		"pnpm": ">=9.0.0"
-	},
-	"main": "dist/main.js",
-	"files": [
-		"dist/*"
-	],
 	"keywords": [
 		"tweakpane",
 		"svelte",
 		"css",
 		"developer-tools",
 		"npm-package"
+	],
+	"homepage": "https://github.com/kitschpatrol/tweakpane-css",
+	"bugs": "https://github.com/kitschpatrol/tweakpane-css/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kitschpatrol/tweakpane-css.git"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Eric Mika",
+		"email": "eric@ericmika.com",
+		"url": "https://ericmika.com/"
+	},
+	"type": "module",
+	"main": "dist/main.js",
+	"files": [
+		"dist/*"
 	],
 	"scripts": {
 		"build": "vite build",
@@ -38,13 +33,13 @@
 		"dev": "npm-run-all --parallel dev:*",
 		"dev:build": "vite build --watch",
 		"dev:serve": "vite",
-		"fix": "shared-config --fix",
-		"lint": "shared-config --check",
+		"fix": "kpi fix",
+		"lint": "kpi lint",
 		"preview": "vite preview",
 		"release": "bumpp --commit 'Release: %s' && pnpm run build && pnpm publish --otp $(op read 'op://Personal/Npmjs/one-time password?attribute=otp')"
 	},
 	"devDependencies": {
-		"@kitschpatrol/shared-config": "^4.7.11",
+		"@kitschpatrol/shared-config": "^5.0.8",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@tsconfig/svelte": "^5.0.4",
 		"@types/qs": "^6.9.16",
@@ -56,11 +51,24 @@
 		"svelte-check": "^4.0.5",
 		"svelte-persisted-store": "^0.11.0",
 		"svelte-tweakpane-ui": "^1.4.0",
-		"typescript": "^5.6.3",
+		"typescript": "~5.7.3",
 		"vite": "^5.4.9",
 		"vite-plugin-live-reload": "^3.0.3"
 	},
+	"packageManager": "pnpm@10.5.2",
+	"engines": {
+		"node": ">=20.9.0"
+	},
 	"publishConfig": {
 		"access": "public"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"esbuild",
+			"puppeteer"
+		],
+		"overrides": {
+			"eslint-plugin-markdown": "^5.1.0"
+		}
 	}
 }
