@@ -1,4 +1,3 @@
-/* eslint-disable import/no-named-as-default-member */
 /* eslint-disable ts/no-unsafe-call */
 /* eslint-disable unicorn/prefer-top-level-await */
 
