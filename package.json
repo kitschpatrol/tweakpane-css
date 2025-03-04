@@ -1,6 +1,6 @@
 {
 	"name": "tweakpane-css",
-	"version": "2.2.2",
+	"version": "2.2.3",
 	"description": "Detect and tweak CSS variables at runtime.",
 	"keywords": [
 		"tweakpane",
