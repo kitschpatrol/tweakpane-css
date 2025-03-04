@@ -5,7 +5,7 @@
 	"description": "Detect and tweak CSS variables at runtime.",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/kitschpatrol/tweakpane-css.git"
+		"url": "git+https://github.com/kitschpatrol/tweakpane-css.git"
 	},
 	"homepage": "https://github.com/kitschpatrol/tweakpane-css",
 	"bugs": "https://github.com/kitschpatrol/tweakpane-css/issues",
