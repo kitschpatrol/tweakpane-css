@@ -170,6 +170,8 @@ Tweakpane CSS was written in [Svelte](https://svelte.dev) and leverages [svelte-
 
 I created Tweakpane CSS for my own purposes, and it might not generalize well to other use-cases. If you'd like to see additional features or compatibility measures, please [open an issue](https://github.com/kitschpatrol/tweakpane-css/issues).
 
+To fix: If multiple instances same page is running in a hidden tab, infinite loops of re-rendering can occur because of shared local storage.
+
 ## Acknowledgments
 
 Thanks to [Hiroki Kokubun](https://cocopon.me) for the excellent Tweakpane library.
