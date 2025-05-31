@@ -1,5 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 
+import parse from 'color-parse'
+
 export function stripPrefix(name: string): string {
 	return name.split(' ').slice(1).join(' ')
 }
@@ -35,4 +37,11 @@ export function cleanName(name: string): string {
 		.replace('--', '')
 		.replaceAll('-', ' ')
 		.replaceAll(/\w\S*/g, (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase())
+}
+
+// TODO this needs to be more robust
+export function isColorString(value: unknown): boolean {
+	if (typeof value !== 'string') return false
+	const { values } = parse(value)
+	return values.length > 0
 }

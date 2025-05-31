@@ -37,7 +37,7 @@
 	import AutoValue from 'svelte-tweakpane-ui/AutoValue.svelte'
 	import Button from 'svelte-tweakpane-ui/Button.svelte'
 	import ButtonGrid from 'svelte-tweakpane-ui/ButtonGrid.svelte'
-	import Color from 'svelte-tweakpane-ui/Color.svelte'
+	import ColorPlus from 'svelte-tweakpane-ui/ColorPlus.svelte'
 	import Folder from 'svelte-tweakpane-ui/Folder.svelte'
 	import Pane from 'svelte-tweakpane-ui/Pane.svelte'
 	import Separator from 'svelte-tweakpane-ui/Separator.svelte'
@@ -46,6 +46,7 @@
 		cleanName,
 		copyToClipboard,
 		getHash,
+		isColorString,
 		parseNumberOrReturnOriginal,
 		stripPrefix,
 	} from '../utilities'
@@ -294,12 +295,6 @@
 	let controlPlan: Plan[] = []
 	let cssVariableKeys: string[] = []
 
-	// TODO this is naive
-	function isColorString(value: unknown): boolean {
-		if (typeof value !== 'string') return false
-		return String(value).startsWith('#')
-	}
-
 	// $: $optionsStore = options
 	$: updateCssVariableKeys($cssVariableStore)
 	$: updatePlanForStore(cssVariableKeys, $optionsStore)
@@ -313,7 +308,10 @@
 					{#each plan.children as child}
 						{#if child.type === 'control'}
 							{#if isColorString($cssVariableStore[child.key])}
-								<Color bind:value={$cssVariableStore[child.key] as string} label={child.label} />
+								<ColorPlus
+									bind:value={$cssVariableStore[child.key] as string}
+									label={child.label}
+								/>
 							{:else}
 								<AutoValue bind:value={$cssVariableStore[child.key]} label={child.label} />
 							{/if}
@@ -322,7 +320,7 @@
 				</Folder>
 			{:else if plan.type === 'control'}
 				{#if isColorString($cssVariableStore[plan.key])}
-					<Color bind:value={$cssVariableStore[plan.key] as string} label={plan.label} />
+					<ColorPlus bind:value={$cssVariableStore[plan.key] as string} label={plan.label} />
 				{:else}
 					<AutoValue bind:value={$cssVariableStore[plan.key]} label={plan.label} />
 				{/if}
