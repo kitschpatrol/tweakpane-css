@@ -2,13 +2,15 @@
 	function getUnits(value: string): string | undefined {
 		// Don't get confused by hex colors or complex expressions
 		if (Number.isNaN(Number.parseFloat(value))) return ''
+		// eslint-disable-next-line regexp/no-unused-capturing-group
 		const match = /^(-?[\d.]+)\s?([%a-z]*)$/i.exec(value)
 		return match?.[2]
 	}
 
+	/**
+	 * Apply any modified styles
+	 */
 	export function preload(): void {
-		// Apply any modified styles
-
 		if (typeof localStorage !== 'undefined') {
 			const cssVariables = localStorage.getItem('css')
 			if (cssVariables) {
@@ -18,10 +20,7 @@
 					const units = getUnits(
 						window.getComputedStyle(document.documentElement).getPropertyValue(variableName),
 					)
-					document.documentElement.style.setProperty(
-						variableName,
-						`${value}${units ? `${units}` : ''}`,
-					)
+					document.documentElement.style.setProperty(variableName, `${value}${units ?? ''}`)
 				}
 			}
 		}
@@ -30,8 +29,8 @@
 
 <script lang="ts">
 	import type { ButtonGridClickEvent } from 'svelte-tweakpane-ui/ButtonGrid.svelte'
+	import type { Writable } from 'svelte/store'
 	import { onMount, tick } from 'svelte'
-	import { type Writable } from 'svelte/store'
 	import { persisted } from 'svelte-persisted-store'
 	import AutoObject from 'svelte-tweakpane-ui/AutoObject.svelte'
 	import AutoValue from 'svelte-tweakpane-ui/AutoValue.svelte'
@@ -156,6 +155,7 @@
 					})
 				} else if (lastPrefix === thisPrefix) {
 					// Add to folder
+
 					const lastFolder = autoFolderControls.at(-1) as FolderPlan
 					lastFolder.children.push(options.prettyNames ? stripLabelPrefix(control) : control)
 				} else {
@@ -216,6 +216,7 @@
 			if (!rootCssVariables.includes(key)) {
 				// TODO revisit $?
 
+				// eslint-disable-next-line ts/no-dynamic-delete
 				delete $cssVariableStore[key]
 			}
 		}
@@ -245,7 +246,7 @@
 			const units = getUnits(
 				window.getComputedStyle(document.documentElement).getPropertyValue(variableName),
 			)
-			return `\t${variableName}: ${value}${units ? `${units}` : ''};\n`
+			return `\t${variableName}: ${value}${units ?? ''};\n`
 		})
 
 		void copyToClipboard(`:root {\n${directives.join('')}}`, logPrefix)
@@ -287,7 +288,7 @@
 
 			document.documentElement.style.setProperty(
 				variableName,
-				`${$cssVariableStore[variableName]}${units ? `${units}` : ''}`,
+				`${$cssVariableStore[variableName]}${units ?? ''}`,
 			)
 		}
 	}
