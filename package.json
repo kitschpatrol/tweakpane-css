@@ -39,7 +39,7 @@
 		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish"
 	},
 	"devDependencies": {
-		"@kitschpatrol/shared-config": "^5.8.0",
+		"@kitschpatrol/shared-config": "^5.8.1",
 		"@sveltejs/vite-plugin-svelte": "^5.1.1",
 		"@tsconfig/svelte": "^5.0.5",
 		"@types/qs": "^6.14.0",
@@ -62,15 +62,5 @@
 	},
 	"publishConfig": {
 		"access": "public"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"esbuild",
-			"puppeteer",
-			"unrs-resolver"
-		],
-		"overrides": {
-			"eslint-plugin-markdown": "^5.1.0"
-		}
 	}
 }
