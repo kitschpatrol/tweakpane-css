@@ -39,28 +39,25 @@
 		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish"
 	},
 	"devDependencies": {
-		"@kitschpatrol/shared-config": "^5.8.1",
-		"@sveltejs/vite-plugin-svelte": "^5.1.1",
-		"@tsconfig/svelte": "^5.0.5",
+		"@kitschpatrol/shared-config": "^5.9.2",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@tsconfig/svelte": "^5.0.6",
 		"@types/qs": "^6.14.0",
-		"bumpp": "^10.3.1",
+		"bumpp": "^10.3.2",
 		"color-parse": "^2.0.2",
-		"element-ready": "^8.0.0",
+		"element-ready": "^9.0.0",
 		"npm-run-all": "^4.1.5",
 		"qs": "^6.14.0",
-		"svelte": "^5.43.3",
-		"svelte-check": "^4.3.3",
+		"svelte": "^5.45.3",
+		"svelte-check": "^4.3.4",
 		"svelte-persisted-store": "^0.12.0",
-		"svelte-tweakpane-ui": "1.6.0-preview.3",
-		"typescript": "~5.8.3",
-		"vite": "^6.4.1",
+		"svelte-tweakpane-ui": "1.6.0-preview.4",
+		"typescript": "~5.9.3",
+		"vite": "^7.2.6",
 		"vite-plugin-live-reload": "^3.0.5"
 	},
-	"packageManager": "pnpm@10.20.0",
+	"packageManager": "pnpm@10.24.0",
 	"engines": {
 		"node": ">=20.9.0"
-	},
-	"publishConfig": {
-		"access": "public"
 	}
 }
