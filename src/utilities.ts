@@ -45,3 +45,58 @@ export function isColorString(value: unknown): boolean {
 	const { values } = parse(value)
 	return values.length > 0
 }
+
+/**
+ * Check if a CSS value contains a light-dark() function
+ */
+export function isLightDarkValue(value: string): boolean {
+	return value.trim().startsWith('light-dark(')
+}
+
+/**
+ * Parse a light-dark() CSS function into its light and dark components
+ * @example parseLightDark('light-dark(oklch(100% 0 0deg), oklch(16.84% 0 0deg))')
+ * // Returns { light: 'oklch(100% 0 0deg)', dark: 'oklch(16.84% 0 0deg)' }
+ */
+export function parseLightDark(value: string): undefined | { dark: string; light: string } {
+	const trimmed = value.trim()
+	if (!trimmed.startsWith('light-dark(') || !trimmed.endsWith(')')) {
+		return undefined
+	}
+
+	// Extract the inner content between 'light-dark(' and the final ')'
+	const inner = trimmed.slice('light-dark('.length, -1)
+
+	// Parse the two arguments, respecting nested parentheses
+	let depth = 0
+	let commaIndex = -1
+
+	// Iterate by Unicode code points (not UTF-16 code units)
+	// eslint-disable-next-line unicorn/prefer-spread
+	for (const [i, char] of Array.from(inner).entries()) {
+		if (char === '(') {
+			depth++
+		} else if (char === ')') {
+			depth--
+		} else if (char === ',' && depth === 0) {
+			commaIndex = i
+			break
+		}
+	}
+
+	if (commaIndex === -1) {
+		return undefined
+	}
+
+	const light = inner.slice(0, commaIndex).trim()
+	const dark = inner.slice(commaIndex + 1).trim()
+
+	return { dark, light }
+}
+
+/**
+ * Reconstruct a light-dark() CSS function from light and dark values
+ */
+export function reconstructLightDark(light: string, dark: string): string {
+	return `light-dark(${light}, ${dark})`
+}

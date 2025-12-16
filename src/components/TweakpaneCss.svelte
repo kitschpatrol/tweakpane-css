@@ -1,10 +1,30 @@
 <script context="module" lang="ts">
+	// Suffix constants for light-dark variants
+	const PRELOAD_LIGHT_SUFFIX = ':light'
+	const PRELOAD_DARK_SUFFIX = ':dark'
+
 	function getUnits(value: string): string | undefined {
 		// Don't get confused by hex colors or complex expressions
 		if (Number.isNaN(Number.parseFloat(value))) return ''
 		// eslint-disable-next-line regexp/no-unused-capturing-group
 		const match = /^(-?[\d.]+)\s?([%a-z]*)$/i.exec(value)
 		return match?.[2]
+	}
+
+	function preloadReconstructLightDark(light: string, dark: string): string {
+		return `light-dark(${light}, ${dark})`
+	}
+
+	function preloadGetBaseVariableName(key: string): string {
+		if (key.endsWith(PRELOAD_LIGHT_SUFFIX)) {
+			return key.slice(0, -PRELOAD_LIGHT_SUFFIX.length)
+		}
+
+		if (key.endsWith(PRELOAD_DARK_SUFFIX)) {
+			return key.slice(0, -PRELOAD_DARK_SUFFIX.length)
+		}
+
+		return key
 	}
 
 	/**
@@ -14,13 +34,36 @@
 		if (typeof localStorage !== 'undefined') {
 			const cssVariables = localStorage.getItem('css')
 			if (cssVariables) {
-				for (const [variableName, value] of Object.entries(
-					JSON.parse(cssVariables) as Record<string, number | string>,
-				)) {
-					const units = getUnits(
-						window.getComputedStyle(document.documentElement).getPropertyValue(variableName),
-					)
-					document.documentElement.style.setProperty(variableName, `${value}${units ?? ''}`)
+				const store = JSON.parse(cssVariables) as Record<string, number | string>
+				// Using plain Set is appropriate here - this runs in module context before Svelte init
+				// eslint-disable-next-line svelte/prefer-svelte-reactivity
+				const processedBases = new Set<string>()
+
+				for (const key of Object.keys(store)) {
+					const baseKey = preloadGetBaseVariableName(key)
+
+					// Skip if we've already processed this base variable
+					if (processedBases.has(baseKey)) continue
+					processedBases.add(baseKey)
+
+					const lightKey = `${baseKey}${PRELOAD_LIGHT_SUFFIX}`
+					const darkKey = `${baseKey}${PRELOAD_DARK_SUFFIX}`
+
+					// Check if this is a light-dark variable
+					if (lightKey in store && darkKey in store) {
+						const lightValue = String(store[lightKey])
+						const darkValue = String(store[darkKey])
+						document.documentElement.style.setProperty(
+							baseKey,
+							preloadReconstructLightDark(lightValue, darkValue),
+						)
+					} else if (!key.endsWith(PRELOAD_LIGHT_SUFFIX) && !key.endsWith(PRELOAD_DARK_SUFFIX)) {
+						// Regular variable
+						const units = getUnits(
+							window.getComputedStyle(document.documentElement).getPropertyValue(key),
+						)
+						document.documentElement.style.setProperty(key, `${store[key]}${units ?? ''}`)
+					}
 				}
 			}
 		}
@@ -40,13 +83,17 @@
 	import Folder from 'svelte-tweakpane-ui/Folder.svelte'
 	import Pane from 'svelte-tweakpane-ui/Pane.svelte'
 	import Separator from 'svelte-tweakpane-ui/Separator.svelte'
+	import { SvelteMap, SvelteSet } from 'svelte/reactivity'
 	import {
 		arraysEqual,
 		cleanName,
 		copyToClipboard,
 		getHash,
 		isColorString,
+		isLightDarkValue,
+		parseLightDark,
 		parseNumberOrReturnOriginal,
+		reconstructLightDark,
 		stripPrefix,
 	} from '../utilities'
 
@@ -77,6 +124,15 @@
 	// Key string is the hash of the keys in the folder
 	type ExpandedState = Record<string, boolean>
 
+	// Suffix used to identify light-dark variants in the store
+	const LIGHT_SUFFIX = ':light'
+	const DARK_SUFFIX = ':dark'
+
+	// Track which original variable names use light-dark()
+	// Key is the original variable name (e.g. '--background-color')
+	// Value indicates this variable uses light-dark() function
+	type LightDarkMap = Set<string>
+
 	// Defaults
 	const logPrefix = '[tweakpane-css]'
 	const defaultOptions: Options = {
@@ -99,6 +155,12 @@
 		optionsExpandedStateKey: false,
 	})
 
+	// Track which variables use light-dark() (populated during onMount)
+	let lightDarkVariables: LightDarkMap = new SvelteSet()
+
+	// Map of raw CSS values keyed by variable name (to detect light-dark before computed styles resolve them)
+	let rawCssValues = new SvelteMap<string, string>()
+
 	// Helper functions
 
 	function stripLabelPrefix<T extends Plan>(plan: T): T {
@@ -106,6 +168,72 @@
 			...plan,
 			label: stripPrefix(plan.label),
 		}
+	}
+
+	/**
+	 * Get the base variable name without light/dark suffix
+	 * @param key The variable name
+	 * @returns The base variable name without light/dark suffix
+	 */
+	function getBaseVariableName(key: string): string {
+		if (key.endsWith(LIGHT_SUFFIX)) {
+			return key.slice(0, -LIGHT_SUFFIX.length)
+		}
+
+		if (key.endsWith(DARK_SUFFIX)) {
+			return key.slice(0, -DARK_SUFFIX.length)
+		}
+
+		return key
+	}
+
+	/**
+	 * Check if a key is a light or dark variant
+	 * @param key The variable name
+	 * @returns True if the key is a light or dark variant
+	 */
+	function isLightDarkKey(key: string): boolean {
+		return key.endsWith(LIGHT_SUFFIX) || key.endsWith(DARK_SUFFIX)
+	}
+
+	/**
+	 * Apply autoFolders grouping to a list of controls
+	 * @param controls The controls to apply autoFolders to
+	 * @param options The options for the autoFolders
+	 * @returns The auto-folder controls
+	 */
+	function applyAutoFolders(controls: ControlPlan[], options: Options): Plan[] {
+		if (!options.autoFolders || controls.length <= 1) {
+			return controls
+		}
+
+		const autoFolderControls: Plan[] = []
+
+		for (const [index, control] of controls.entries()) {
+			const lastPrefix = index > 0 ? cleanName(controls[index - 1].key).split(' ')[0] : undefined
+			const thisPrefix = cleanName(control.key).split(' ')[0]
+			const nextPrefix =
+				index < controls.length - 1 ? cleanName(controls[index + 1].key).split(' ')[0] : undefined
+
+			if ((lastPrefix === undefined || lastPrefix !== thisPrefix) && thisPrefix === nextPrefix) {
+				// Start folder
+				autoFolderControls.push({
+					children: [options.prettyNames ? stripLabelPrefix(control) : control],
+					expanded: false,
+					label: thisPrefix,
+					type: 'folder',
+				})
+			} else if (lastPrefix === thisPrefix) {
+				// Add to folder
+				const lastFolder = autoFolderControls.at(-1) as FolderPlan
+				lastFolder.children.push(options.prettyNames ? stripLabelPrefix(control) : control)
+			} else {
+				// Push at top level
+				autoFolderControls.push(control)
+			}
+		}
+
+		return autoFolderControls
 	}
 
 	function getControlPlanFromStore(
@@ -116,58 +244,95 @@
 		// Sort if needed
 		const keys = options.sortNames ? cssVariableKeys.toSorted() : cssVariableKeys
 
-		// First pass omits the unwanted
-		const controls = keys.reduce<ControlPlan[]>((accumulator, key) => {
-			const originalValue = window.getComputedStyle(document.documentElement).getPropertyValue(key)
+		// Separate light-dark keys from regular keys
+		const lightKeys: string[] = []
+		const darkKeys: string[] = []
+		const regularKeys: string[] = []
 
-			if (!options.includeCalculated && originalValue.includes('calc(')) {
-				return accumulator
+		for (const key of keys) {
+			if (key.endsWith(LIGHT_SUFFIX)) {
+				lightKeys.push(key)
+			} else if (key.endsWith(DARK_SUFFIX)) {
+				darkKeys.push(key)
+			} else {
+				regularKeys.push(key)
 			}
-
-			const units = getUnits(originalValue)
-			return [
-				...accumulator,
-				{
-					key,
-					label: `${options.prettyNames ? cleanName(key) : key}${units && options.showUnits ? ` (${units})` : ''}`,
-					type: 'control',
-				},
-			]
-		}, [])
-
-		// Second pass to group into folders, maintaining order
-		if (options.autoFolders && controls.length > 1) {
-			const autoFolderControls: Plan[] = []
-
-			for (const [index, control] of controls.entries()) {
-				const lastPrefix = index > 0 ? cleanName(controls[index - 1].key).split(' ')[0] : undefined
-				const thisPrefix = cleanName(control.key).split(' ')[0]
-				const nextPrefix =
-					index < controls.length - 1 ? cleanName(controls[index + 1].key).split(' ')[0] : undefined
-
-				if ((lastPrefix === undefined || lastPrefix !== thisPrefix) && thisPrefix === nextPrefix) {
-					// Start folder
-					autoFolderControls.push({
-						children: [options.prettyNames ? stripLabelPrefix(control) : control],
-						expanded: false,
-						label: thisPrefix,
-						type: 'folder',
-					})
-				} else if (lastPrefix === thisPrefix) {
-					// Add to folder
-
-					const lastFolder = autoFolderControls.at(-1) as FolderPlan
-					lastFolder.children.push(options.prettyNames ? stripLabelPrefix(control) : control)
-				} else {
-					// Push at top level
-					autoFolderControls.push(control)
-				}
-			}
-
-			return autoFolderControls
 		}
 
-		return controls
+		// Helper to create controls from keys
+		const createControls = (keysToProcess: string[], stripSuffix = false): ControlPlan[] =>
+			keysToProcess.reduce<ControlPlan[]>((accumulator, key) => {
+				// Get the raw value for calc() check (use base name for light-dark vars)
+				const baseKey = getBaseVariableName(key)
+				const rawValue = rawCssValues.get(baseKey) ?? ''
+
+				// For light-dark variables, check the inner value for calc()
+				let valueToCheck = rawValue
+				if (isLightDarkKey(key) && isLightDarkValue(rawValue)) {
+					const parsed = parseLightDark(rawValue)
+					if (parsed) {
+						valueToCheck = key.endsWith(LIGHT_SUFFIX) ? parsed.light : parsed.dark
+					}
+				}
+
+				if (!options.includeCalculated && valueToCheck.includes('calc(')) {
+					return accumulator
+				}
+
+				// Get units from the value
+				const units = getUnits(valueToCheck)
+
+				// Build the label, optionally stripping the :light/:dark suffix
+				let displayKey = key
+				if (stripSuffix) {
+					displayKey = baseKey
+				}
+
+				return [
+					...accumulator,
+					{
+						key,
+						label: `${options.prettyNames ? cleanName(displayKey) : displayKey}${units && options.showUnits ? ` (${units})` : ''}`,
+						type: 'control',
+					},
+				]
+			}, [])
+
+		// Build the plan
+		const plan: Plan[] = []
+
+		// Add Light folder if there are light-dark variables
+		if (lightKeys.length > 0) {
+			const lightControls = createControls(lightKeys, true)
+			const lightContent = applyAutoFolders(lightControls, options)
+
+			plan.push({
+				children: lightContent.flatMap((item) => (item.type === 'folder' ? item.children : [item])),
+				expanded: true,
+				label: '☀️ Light',
+				type: 'folder',
+			})
+		}
+
+		// Add Dark folder if there are light-dark variables
+		if (darkKeys.length > 0) {
+			const darkControls = createControls(darkKeys, true)
+			const darkContent = applyAutoFolders(darkControls, options)
+
+			plan.push({
+				children: darkContent.flatMap((item) => (item.type === 'folder' ? item.children : [item])),
+				expanded: true,
+				label: '🌙 Dark',
+				type: 'folder',
+			})
+		}
+
+		// Add regular controls (with autoFolders if enabled)
+		const regularControls = createControls(regularKeys)
+		const regularPlan = applyAutoFolders(regularControls, options)
+		plan.push(...regularPlan)
+
+		return plan
 	}
 
 	function updatePlanForStore(cssVariableKeys: string[] | undefined, options: Options) {
@@ -185,35 +350,65 @@
 	}
 
 	onMount(() => {
-		// Get all the root css variables
-		const rootCssVariables: string[] = [...document.styleSheets]
+		// Get all root CSS rules and extract raw values
+		const rootRules = [...document.styleSheets]
 			.flatMap((styleSheet: CSSStyleSheet) => [...styleSheet.cssRules])
 			.filter(
 				(cssRule: CSSRule): cssRule is CSSStyleRule =>
 					cssRule instanceof CSSStyleRule && cssRule.selectorText === ':root',
 			)
-			.flatMap((cssRule: CSSStyleRule) => [...cssRule.style])
-			.filter((style: string) => style.startsWith('--'))
+
+		// Build a map of raw CSS values (before computed styles resolve light-dark)
+		for (const rule of rootRules) {
+			for (const property of rule.style) {
+				if (property.startsWith('--')) {
+					const rawValue = rule.style.getPropertyValue(property).trim()
+					rawCssValues.set(property, rawValue)
+				}
+			}
+		}
+
+		// Get all the root css variable names
+		const rootCssVariables: string[] = [...rawCssValues.keys()]
 			// Allow exclusions via props
 			.filter(
 				(style: string) =>
 					!exclude.some((excludeProperty) => cleanName(excludeProperty) === cleanName(style)),
 			)
 
-		// Set up the persistent local store
-		cssVariableStore = persisted(
-			'css',
-			rootCssVariables.reduce<Record<string, number | string>>((acc, variableName) => {
-				acc[variableName] = parseNumberOrReturnOriginal(
+		// Build the initial store values, handling light-dark() functions
+		const initialStoreValues: Record<string, number | string> = {}
+		const storeKeys: string[] = []
+
+		for (const variableName of rootCssVariables) {
+			const rawValue = rawCssValues.get(variableName) ?? ''
+
+			if (isLightDarkValue(rawValue)) {
+				// Parse light-dark() and create separate entries
+				const parsed = parseLightDark(rawValue)
+				if (parsed) {
+					lightDarkVariables.add(variableName)
+					const lightKey = `${variableName}${LIGHT_SUFFIX}`
+					const darkKey = `${variableName}${DARK_SUFFIX}`
+					initialStoreValues[lightKey] = parseNumberOrReturnOriginal(parsed.light)
+					initialStoreValues[darkKey] = parseNumberOrReturnOriginal(parsed.dark)
+					storeKeys.push(lightKey, darkKey)
+				}
+			} else {
+				// Regular CSS variable
+				initialStoreValues[variableName] = parseNumberOrReturnOriginal(
 					window.getComputedStyle(document.documentElement).getPropertyValue(variableName),
 				)
-				return acc
-			}, {}),
-		)
+				storeKeys.push(variableName)
+			}
+		}
+
+		// Set up the persistent local store
+		cssVariableStore = persisted('css', initialStoreValues)
 
 		// Clean up stale keys in the store
-		for (const key of Object.keys(cssVariableStore)) {
-			if (!rootCssVariables.includes(key)) {
+		for (const key of Object.keys($cssVariableStore)) {
+			if (!storeKeys.includes(key)) {
 				// TODO revisit $?
 
 				// eslint-disable-next-line ts/no-dynamic-delete
@@ -242,12 +437,8 @@
 	}
 
 	function copyCssToClipboard() {
-		const directives = Object.entries($cssVariableStore).map(([variableName, value]) => {
-			const units = getUnits(
-				window.getComputedStyle(document.documentElement).getPropertyValue(variableName),
-			)
-			return `\t${variableName}: ${value}${units ?? ''};\n`
-		})
+		const processed = getAllProcessedCssVariables($cssVariableStore)
+		const directives = processed.map(({ value, variableName }) => `\t${variableName}: ${value};\n`)
 
 		void copyToClipboard(`:root {\n${directives.join('')}}`, logPrefix)
 	}
@@ -278,18 +469,76 @@
 		}
 	}
 
+	/**
+	 * Get the final CSS value for a variable, handling light-dark reconstruction
+	 * @param store The store to get the value from
+	 * @param variableName The variable name to get the value for
+	 * @returns The final CSS value for the variable
+	 */
+	function getFinalCssValue(
+		store: Record<string, number | string>,
+		variableName: string,
+	): undefined | { value: string; variableName: string } {
+		// Skip light/dark suffixed keys - they're handled via their base variable
+		if (variableName.endsWith(LIGHT_SUFFIX) || variableName.endsWith(DARK_SUFFIX)) {
+			return undefined
+		}
+
+		const lightKey = `${variableName}${LIGHT_SUFFIX}`
+		const darkKey = `${variableName}${DARK_SUFFIX}`
+
+		// Check if this variable has light-dark variants in the store
+		if (lightKey in store && darkKey in store) {
+			const lightValue = String(store[lightKey])
+			const darkValue = String(store[darkKey])
+			return {
+				value: reconstructLightDark(lightValue, darkValue),
+				variableName,
+			}
+		}
+
+		// Regular variable - get units and construct value
+		const rawValue = rawCssValues.get(variableName) ?? ''
+		const units = getUnits(rawValue)
+		return {
+			value: `${store[variableName]}${units ?? ''}`,
+			variableName,
+		}
+	}
+
+	/**
+	 * Get all processed CSS variables, grouping light-dark pairs
+	 * @param store The store to get the variables from
+	 * @returns The processed CSS variables
+	 */
+	function getAllProcessedCssVariables(
+		store: Record<string, number | string>,
+	): Array<{ value: string; variableName: string }> {
+		const result: Array<{ value: string; variableName: string }> = []
+		const processedBases = new SvelteSet<string>()
+
+		for (const key of Object.keys(store)) {
+			const baseKey = getBaseVariableName(key)
+
+			// Skip if we've already processed this base variable
+			if (processedBases.has(baseKey)) continue
+			processedBases.add(baseKey)
+
+			const processed = getFinalCssValue(store, baseKey)
+			if (processed) {
+				result.push(processed)
+			}
+		}
+
+		return result
+	}
+
 	// Reactive
 	$: if (cssVariableStore) {
-		// Set the css variables on the document, appending the original unit if needed
-		for (const variableName of Object.keys($cssVariableStore)) {
-			const units = getUnits(
-				window.getComputedStyle(document.documentElement).getPropertyValue(variableName),
-			)
-
-			document.documentElement.style.setProperty(
-				variableName,
-				`${$cssVariableStore[variableName]}${units ?? ''}`,
-			)
+		// Set the css variables on the document, handling light-dark reconstruction
+		const processed = getAllProcessedCssVariables($cssVariableStore)
+		for (const { value, variableName } of processed) {
+			document.documentElement.style.setProperty(variableName, value)
 		}
 	}
 

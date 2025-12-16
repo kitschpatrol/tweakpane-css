@@ -11,14 +11,35 @@
 				--color-b: #ffff00;
 				--angle: 45deg;
 				--derived-angle: calc(var(--angle) + 90deg);
+				/* Light-dark examples */
+				--background-color: light-dark(oklch(100% 0 0deg), oklch(16.84% 0 0deg));
+				--text-color: light-dark(oklch(20% 0 0deg), oklch(90% 0 0deg));
 			}
 
 			body {
 				overflow: hidden;
 				width: 100vw;
 				height: 100vh;
+				color-scheme: light dark;
+			}
+
+			.demo-text {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				padding: 3rem;
+				font-family: sans-serif;
+				font-size: 2rem;
+				font-style: italic;
+				color: var(--text-color);
+				background-color: var(--background-color);
 			}
 		</style>
 	</head>
-	<body style="background: linear-gradient(var(--angle), var(--color-a), var(--color-b))"></body>
+	<body style="background: linear-gradient(var(--angle), var(--color-a), var(--color-b))">
+		<div class="demo-text">
+			As far as pixels go, it is not what they are that interests me, but what they can become.
+		</div>
+	</body>
 </html>
