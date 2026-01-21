@@ -45,8 +45,8 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0(svelte@5.47.1)
       svelte-tweakpane-ui:
-        specifier: 1.6.0-preview.4
-        version: 1.6.0-preview.4(svelte@5.47.1)
+        specifier: 1.6.0-preview.5
+        version: 1.6.0-preview.5(svelte@5.47.1)
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -2308,15 +2308,11 @@ packages:
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
 
-  fast-copy@3.0.2:
-    resolution: {integrity: sha512-dl0O9Vhju8IrcLndv2eU4ldt1ftXMqqfgN4H1cpmGV7P6jeB9FwpN9a2c8DPGE1Ys88rNUJVYDHq73CGAGOPfQ==}
+  fast-copy@4.0.2:
+    resolution: {integrity: sha512-ybA6PDXIXOXivLJK/z9e+Otk7ve13I4ckBvGO5I2RRmBU1gMHLVDJYEuJYhGwez7YNlYji2M2DvVU+a9mSFDlw==}
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
-
-  fast-equals@5.4.0:
-    resolution: {integrity: sha512-jt2DW/aNFNwke7AUd+Z+e6pz39KO5rzdbbFCg2sGafS4mk13MI7Z8O5z9cADNn5lhGODIgLwug6TZO2ctf7kcw==}
-    engines: {node: '>=6.0.0'}
 
   fast-equals@6.0.0:
     resolution: {integrity: sha512-PFhhIGgdM79r5Uztdj9Zb6Tt1zKafqVfdMGwVca1z5z6fbX7DmsySSuJd8HiP6I1j505DCS83cLxo5rmSNeVEA==}
@@ -4198,8 +4194,8 @@ packages:
     peerDependencies:
       svelte: ^3.48.0 || ^4 || ^5
 
-  svelte-tweakpane-ui@1.6.0-preview.4:
-    resolution: {integrity: sha512-hnAVOz2TAQ9Sge/JIln90VHLwYdgiUFrZgCOY9eJJAs/h426mbWgvtN0EaJjzSTy2nII7WEYJ76gS7mpHtv7Ow==}
+  svelte-tweakpane-ui@1.6.0-preview.5:
+    resolution: {integrity: sha512-9XBTUzef3CsuA0wjWVb8SJWVDvScJ2xMsRbjUa/KoPc6s1MHHfnbsUswCvviKTs+DDUkVo5P3d8Uw+vwAFy40Q==}
     peerDependencies:
       svelte: ^4.0.0 || ^5.0.0
 
@@ -4269,8 +4265,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  tweakpane-plugin-color-plus@0.1.9:
-    resolution: {integrity: sha512-G/aKGdTKi+twgsteknkEamirUhVLZ2bo2ukmvP7dtz2umGU3yi9uKiX64riRfuU66Z/MxRSYzInhml3j08ghyA==}
+  tweakpane-plugin-color-plus@0.2.0:
+    resolution: {integrity: sha512-eQiK2YP7yf/5gN/rIaKCQ5baF3Zj++p6NBnfZ4hyXBpGwbp2xU8FkPSP/h/X38J27/eKx5HJ/sRRpDN0Wd/RtA==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       tweakpane: ^4.0.0
@@ -7360,11 +7356,9 @@ snapshots:
 
   extend@3.0.2: {}
 
-  fast-copy@3.0.2: {}
+  fast-copy@4.0.2: {}
 
   fast-deep-equal@3.1.3: {}
-
-  fast-equals@5.4.0: {}
 
   fast-equals@6.0.0: {}
 
@@ -9818,7 +9812,7 @@ snapshots:
     dependencies:
       svelte: 5.47.1
 
-  svelte-tweakpane-ui@1.6.0-preview.4(svelte@5.47.1):
+  svelte-tweakpane-ui@1.6.0-preview.5(svelte@5.47.1):
     dependencies:
       '@kitschpatrol/tweakpane-plugin-camerakit': 0.3.1-beta.3(tweakpane@4.0.5)
       '@kitschpatrol/tweakpane-plugin-essentials': 0.2.2-beta.3(tweakpane@4.0.5)
@@ -9831,13 +9825,13 @@ snapshots:
       '@kitschpatrol/tweakpane-plugin-waveform': 1.0.4-beta.3(tweakpane@4.0.5)
       '@tweakpane/core': 2.0.5
       esm-env: 1.2.2
-      fast-copy: 3.0.2
-      fast-equals: 5.4.0
+      fast-copy: 4.0.2
+      fast-equals: 6.0.0
       nanoid: 5.1.6
       svelte: 5.47.1
       svelte-persisted-store: 0.12.0(svelte@5.47.1)
       tweakpane: 4.0.5
-      tweakpane-plugin-color-plus: 0.1.9(tweakpane@4.0.5)
+      tweakpane-plugin-color-plus: 0.2.0(tweakpane@4.0.5)
 
   svelte@5.47.1:
     dependencies:
@@ -9912,7 +9906,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tweakpane-plugin-color-plus@0.1.9(tweakpane@4.0.5):
+  tweakpane-plugin-color-plus@0.2.0(tweakpane@4.0.5):
     dependencies:
       '@tweakpane/core': 2.0.5
       tweakpane: 4.0.5
