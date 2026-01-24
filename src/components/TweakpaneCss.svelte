@@ -80,6 +80,7 @@
 	import Button from 'svelte-tweakpane-ui/Button.svelte'
 	import ButtonGrid from 'svelte-tweakpane-ui/ButtonGrid.svelte'
 	import ColorPlus from 'svelte-tweakpane-ui/ColorPlus.svelte'
+	import CubicBezier from 'svelte-tweakpane-ui/CubicBezier.svelte'
 	import Folder from 'svelte-tweakpane-ui/Folder.svelte'
 	import Pane from 'svelte-tweakpane-ui/Pane.svelte'
 	import Separator from 'svelte-tweakpane-ui/Separator.svelte'
@@ -90,9 +91,12 @@
 		copyToClipboard,
 		getHash,
 		isColorString,
+		isCubicBezierString,
 		isLightDarkValue,
+		parseCubicBezier,
 		parseLightDark,
 		parseNumberOrReturnOriginal,
+		reconstructCubicBezier,
 		reconstructLightDark,
 		stripPrefix,
 	} from '../utilities'
@@ -148,8 +152,11 @@
 	export let exclude: string[] = []
 	export let options: Options = defaultOptions
 
+	// Store value type includes arrays for cubic-bezier
+	type StoreValue = number | string | [number, number, number, number]
+
 	// Stores
-	let cssVariableStore: Writable<Record<string, number | string>>
+	let cssVariableStore: Writable<Record<string, StoreValue>>
 	let optionsStore: Writable<Options> = persisted('css-options', options)
 	let expandedStateStore: Writable<ExpandedState> = persisted('css-expanded-state', {
 		optionsExpandedStateKey: false,
@@ -194,6 +201,13 @@
 	 */
 	function isLightDarkKey(key: string): boolean {
 		return key.endsWith(LIGHT_SUFFIX) || key.endsWith(DARK_SUFFIX)
+	}
+
+	/**
+	 * Check if a store value is a cubic-bezier array
+	 */
+	function isCubicBezierArray(value: StoreValue): value is [number, number, number, number] {
+		return Array.isArray(value) && value.length === 4 && value.every((v) => typeof v === 'number')
 	}
 
 	/**
@@ -390,8 +404,8 @@
 					!exclude.some((excludeProperty) => cleanName(excludeProperty) === cleanName(style)),
 			)
 
-		// Build the initial store values, handling light-dark() functions
-		const initialStoreValues: Record<string, number | string> = {}
+		// Build the initial store values, handling light-dark() and cubic-bezier() functions
+		const initialStoreValues: Record<string, StoreValue> = {}
 		const storeKeys: string[] = []
 
 		for (const variableName of rootCssVariables) {
@@ -407,6 +421,13 @@
 					initialStoreValues[lightKey] = parseNumberOrReturnOriginal(parsed.light)
 					initialStoreValues[darkKey] = parseNumberOrReturnOriginal(parsed.dark)
 					storeKeys.push(lightKey, darkKey)
+				}
+			} else if (isCubicBezierString(rawValue)) {
+				// Parse cubic-bezier() and store as array
+				const parsed = parseCubicBezier(rawValue)
+				if (parsed) {
+					initialStoreValues[variableName] = parsed
+					storeKeys.push(variableName)
 				}
 			} else {
 				// Regular CSS variable
@@ -474,7 +495,7 @@
 		$optionsStore = options
 	}
 
-	function updateCssVariableKeys(store: Record<string, number | string>) {
+	function updateCssVariableKeys(store: Record<string, StoreValue>) {
 		if (!store) return
 		const latestKeys = Object.keys(store)
 
@@ -484,13 +505,13 @@
 	}
 
 	/**
-	 * Get the final CSS value for a variable, handling light-dark reconstruction
+	 * Get the final CSS value for a variable, handling light-dark and cubic-bezier reconstruction
 	 * @param store The store to get the value from
 	 * @param variableName The variable name to get the value for
 	 * @returns The final CSS value for the variable
 	 */
 	function getFinalCssValue(
-		store: Record<string, number | string>,
+		store: Record<string, StoreValue>,
 		variableName: string,
 	): undefined | { value: string; variableName: string } {
 		// Skip light/dark suffixed keys - they're handled via their base variable
@@ -511,11 +532,21 @@
 			}
 		}
 
+		const storeValue = store[variableName]
+
+		// Check if this is a cubic-bezier array
+		if (isCubicBezierArray(storeValue)) {
+			return {
+				value: reconstructCubicBezier(storeValue),
+				variableName,
+			}
+		}
+
 		// Regular variable - get units and construct value
 		const rawValue = rawCssValues.get(variableName) ?? ''
 		const units = getUnits(rawValue)
 		return {
-			value: `${store[variableName]}${units ?? ''}`,
+			value: `${storeValue}${units ?? ''}`,
 			variableName,
 		}
 	}
@@ -526,7 +557,7 @@
 	 * @returns The processed CSS variables
 	 */
 	function getAllProcessedCssVariables(
-		store: Record<string, number | string>,
+		store: Record<string, StoreValue>,
 	): Array<{ value: string; variableName: string }> {
 		const result: Array<{ value: string; variableName: string }> = []
 		const processedBases = new SvelteSet<string>()
@@ -576,6 +607,11 @@
 									bind:value={$cssVariableStore[child.key] as string}
 									label={child.label}
 								/>
+							{:else if isCubicBezierArray($cssVariableStore[child.key])}
+								<CubicBezier
+									bind:value={$cssVariableStore[child.key] as [number, number, number, number]}
+									label={child.label}
+								/>
 							{:else}
 								<AutoValue bind:value={$cssVariableStore[child.key]} label={child.label} />
 							{/if}
@@ -585,6 +621,11 @@
 			{:else if plan.type === 'control'}
 				{#if isColorString($cssVariableStore[plan.key])}
 					<ColorPlus bind:value={$cssVariableStore[plan.key] as string} label={plan.label} />
+				{:else if isCubicBezierArray($cssVariableStore[plan.key])}
+					<CubicBezier
+						bind:value={$cssVariableStore[plan.key] as [number, number, number, number]}
+						label={plan.label}
+					/>
 				{:else}
 					<AutoValue bind:value={$cssVariableStore[plan.key]} label={plan.label} />
 				{/if}

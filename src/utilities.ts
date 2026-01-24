@@ -100,3 +100,38 @@ export function parseLightDark(value: string): undefined | { dark: string; light
 export function reconstructLightDark(light: string, dark: string): string {
 	return `light-dark(${light}, ${dark})`
 }
+
+/**
+ * Check if a CSS value is a cubic-bezier() function
+ */
+export function isCubicBezierString(value: unknown): boolean {
+	if (typeof value !== 'string') return false
+	return /^cubic-bezier\(\s*[\d.]+\s*,\s*[\d.-]+\s*,\s*[\d.]+\s*,\s*[\d.-]+\s*\)$/i.test(
+		value.trim(),
+	)
+}
+
+/**
+ * Parse a cubic-bezier() CSS function into an array of 4 numbers
+ * @example parseCubicBezier('cubic-bezier(0.25, 0.1, 0.25, 1)')
+ * // Returns [0.25, 0.1, 0.25, 1]
+ */
+export function parseCubicBezier(value: string): [number, number, number, number] | undefined {
+	const match = /^cubic-bezier\(\s*([\d.]+)\s*,\s*([\d.-]+)\s*,\s*([\d.]+)\s*,\s*([\d.-]+)\s*\)$/i.exec(
+		value.trim(),
+	)
+	if (!match) return undefined
+	return [
+		Number.parseFloat(match[1]),
+		Number.parseFloat(match[2]),
+		Number.parseFloat(match[3]),
+		Number.parseFloat(match[4]),
+	]
+}
+
+/**
+ * Convert an array of 4 numbers to a cubic-bezier() CSS function string
+ */
+export function reconstructCubicBezier(values: [number, number, number, number]): string {
+	return `cubic-bezier(${values.join(', ')})`
+}
