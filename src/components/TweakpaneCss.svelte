@@ -350,12 +350,26 @@
 	}
 
 	onMount(() => {
+		// Recursively extract all CSS rules (handles @layer, @media, @supports, etc.)
+		function getAllCssRules(rules: CSSRuleList): CSSRule[] {
+			const result: CSSRule[] = []
+			for (const rule of rules) {
+				result.push(rule)
+				if ('cssRules' in rule && rule.cssRules) {
+					result.push(...getAllCssRules(rule.cssRules as CSSRuleList))
+				}
+			}
+
+			return result
+		}
+
 		// Get all root CSS rules and extract raw values
 		const rootRules = [...document.styleSheets]
-			.flatMap((styleSheet: CSSStyleSheet) => [...styleSheet.cssRules])
+			.flatMap((styleSheet: CSSStyleSheet) => getAllCssRules(styleSheet.cssRules))
 			.filter(
 				(cssRule: CSSRule): cssRule is CSSStyleRule =>
-					cssRule instanceof CSSStyleRule && cssRule.selectorText === ':root',
+					cssRule instanceof CSSStyleRule &&
+					cssRule.selectorText.split(',').some((s) => s.trim() === ':root'),
 			)
 
 		// Build a map of raw CSS values (before computed styles resolve light-dark)
