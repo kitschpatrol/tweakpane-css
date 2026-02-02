@@ -117,9 +117,10 @@ export function isCubicBezierString(value: unknown): boolean {
  * // Returns [0.25, 0.1, 0.25, 1]
  */
 export function parseCubicBezier(value: string): [number, number, number, number] | undefined {
-	const match = /^cubic-bezier\(\s*([\d.]+)\s*,\s*([\d.-]+)\s*,\s*([\d.]+)\s*,\s*([\d.-]+)\s*\)$/i.exec(
-		value.trim(),
-	)
+	const match =
+		/^cubic-bezier\(\s*([\d.]+)\s*,\s*([\d.-]+)\s*,\s*([\d.]+)\s*,\s*([\d.-]+)\s*\)$/i.exec(
+			value.trim(),
+		)
 	if (!match) return undefined
 	return [
 		Number.parseFloat(match[1]),

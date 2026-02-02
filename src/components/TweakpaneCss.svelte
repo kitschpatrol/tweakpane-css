@@ -152,8 +152,8 @@
 	export let exclude: string[] = []
 	export let options: Options = defaultOptions
 
-	// Store value type includes arrays for cubic-bezier
-	type StoreValue = number | string | [number, number, number, number]
+	// Store value type includes tuple for cubic-bezier
+	type StoreValue = [number, number, number, number] | number | string
 
 	// Stores
 	let cssVariableStore: Writable<Record<string, StoreValue>>
@@ -204,9 +204,11 @@
 	}
 
 	/**
-	 * Check if a store value is a cubic-bezier array
+	 * Check if a store value is a cubic-bezier tuple
+	 * @param value Stored value
+	 * @returns True if the value is a cubic-bezier tuple
 	 */
-	function isCubicBezierArray(value: StoreValue): value is [number, number, number, number] {
+	function isCubicBezierTuple(value: StoreValue): value is [number, number, number, number] {
 		return Array.isArray(value) && value.length === 4 && value.every((v) => typeof v === 'number')
 	}
 
@@ -363,28 +365,26 @@
 			})
 	}
 
-	onMount(() => {
-		// Recursively extract all CSS rules (handles @layer, @media, @supports, etc.)
-		function getAllCssRules(rules: CSSRuleList): CSSRule[] {
-			const result: CSSRule[] = []
-			for (const rule of rules) {
-				result.push(rule)
-				if ('cssRules' in rule && rule.cssRules) {
-					result.push(...getAllCssRules(rule.cssRules as CSSRuleList))
-				}
+	// Recursively extract :root style rules (handles @layer, @media, @supports, etc.)
+	function* getRootStyleRules(rules: CSSRuleList): Generator<CSSStyleRule> {
+		for (const rule of rules) {
+			if (
+				rule instanceof CSSStyleRule &&
+				rule.selectorText.split(',').some((s) => s.trim() === ':root')
+			) {
+				yield rule
 			}
-
-			return result
+			if (rule instanceof CSSGroupingRule) {
+				yield* getRootStyleRules(rule.cssRules)
+			}
 		}
+	}
 
+	onMount(() => {
 		// Get all root CSS rules and extract raw values
-		const rootRules = [...document.styleSheets]
-			.flatMap((styleSheet: CSSStyleSheet) => getAllCssRules(styleSheet.cssRules))
-			.filter(
-				(cssRule: CSSRule): cssRule is CSSStyleRule =>
-					cssRule instanceof CSSStyleRule &&
-					cssRule.selectorText.split(',').some((s) => s.trim() === ':root'),
-			)
+		const rootRules = [...document.styleSheets].flatMap((styleSheet) => [
+			...getRootStyleRules(styleSheet.cssRules),
+		])
 
 		// Build a map of raw CSS values (before computed styles resolve light-dark)
 		for (const rule of rootRules) {
@@ -423,7 +423,7 @@
 					storeKeys.push(lightKey, darkKey)
 				}
 			} else if (isCubicBezierString(rawValue)) {
-				// Parse cubic-bezier() and store as array
+				// Parse cubic-bezier() and store as tuple
 				const parsed = parseCubicBezier(rawValue)
 				if (parsed) {
 					initialStoreValues[variableName] = parsed
@@ -535,7 +535,7 @@
 		const storeValue = store[variableName]
 
 		// Check if this is a cubic-bezier array
-		if (isCubicBezierArray(storeValue)) {
+		if (isCubicBezierTuple(storeValue)) {
 			return {
 				value: reconstructCubicBezier(storeValue),
 				variableName,
@@ -607,7 +607,7 @@
 									bind:value={$cssVariableStore[child.key] as string}
 									label={child.label}
 								/>
-							{:else if isCubicBezierArray($cssVariableStore[child.key])}
+							{:else if isCubicBezierTuple($cssVariableStore[child.key])}
 								<CubicBezier
 									bind:value={$cssVariableStore[child.key] as [number, number, number, number]}
 									label={child.label}
@@ -621,7 +621,7 @@
 			{:else if plan.type === 'control'}
 				{#if isColorString($cssVariableStore[plan.key])}
 					<ColorPlus bind:value={$cssVariableStore[plan.key] as string} label={plan.label} />
-				{:else if isCubicBezierArray($cssVariableStore[plan.key])}
+				{:else if isCubicBezierTuple($cssVariableStore[plan.key])}
 					<CubicBezier
 						bind:value={$cssVariableStore[plan.key] as [number, number, number, number]}
 						label={plan.label}
