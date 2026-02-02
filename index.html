@@ -7,13 +7,21 @@
 		<script src="./dist/main.js"></script>
 		<style>
 			:root {
-				--color-a: oklch(70.17% 0.3225 328.36deg);
-				--color-b: #ffff00;
-				--angle: 45deg;
-				--derived-angle: calc(var(--angle) + 90deg);
-				/* Light-dark examples */
-				--background-color: light-dark(oklch(100% 0 0deg), oklch(16.84% 0 0deg));
-				--text-color: light-dark(oklch(20% 0 0deg), oklch(90% 0 0deg));
+				--transition-timing: cubic-bezier(0.34, 1.56, 0.64, 1);
+				--transition-duration: 0.6s;
+			}
+
+			/* Variables in @layer (exercising recursive CSS rule extraction) */
+			@layer theme {
+				:root {
+					--color-a: oklch(70.17% 0.3225 328.36deg);
+					--color-b: #ffff00;
+					--angle: 45deg;
+					--derived-angle: calc(var(--angle) + 90deg);
+					/* Light-dark examples */
+					--background-color: light-dark(oklch(100% 0 0deg), oklch(16.84% 0 0deg));
+					--text-color: light-dark(oklch(20% 0 0deg), oklch(90% 0 0deg));
+				}
 			}
 
 			body {
@@ -28,12 +36,28 @@
 				top: 50%;
 				left: 50%;
 				transform: translate(-50%, -50%);
+				max-width: 60vw;
 				padding: 3rem;
 				font-family: sans-serif;
 				font-size: 2rem;
 				font-style: italic;
 				color: var(--text-color);
 				background-color: var(--background-color);
+				transition: transform var(--transition-duration) var(--transition-timing);
+			}
+
+			.randomize-btn {
+				cursor: pointer;
+				position: fixed;
+				z-index: 100;
+				bottom: 2rem;
+				left: 2rem;
+				padding: 0.75rem 1.5rem;
+				border: none;
+				border-radius: 6px;
+				font-size: 1rem;
+				color: white;
+				background: oklch(50% 0.2 260deg);
 			}
 		</style>
 	</head>
@@ -41,5 +65,16 @@
 		<div class="demo-text">
 			As far as pixels go, it is not what they are that interests me, but what they can become.
 		</div>
+		<button type="button" class="randomize-btn" onclick="randomizePosition()">
+			Randomize Position
+		</button>
+		<script>
+			function randomizePosition() {
+				const el = document.querySelector('.demo-text')
+				const x = (Math.random() - 0.5) * 50
+				const y = (Math.random() - 0.5) * 50
+				el.style.transform = `translate(calc(-50% + ${x}vw), calc(-50% + ${y}vh))`
+			}
+		</script>
 	</body>
 </html>
