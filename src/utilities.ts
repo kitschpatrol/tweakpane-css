@@ -2,6 +2,11 @@
 
 import parse from 'color-parse'
 
+const CUBIC_BEZIER_TEST_REGEX =
+	/^cubic-bezier\(\s*[\d.]+\s*,\s*[\d.-]+\s*,\s*[\d.]+\s*,\s*[\d.-]+\s*\)$/i
+const CUBIC_BEZIER_PARSE_REGEX =
+	/^cubic-bezier\(\s*([\d.]+)\s*,\s*([\d.-]+)\s*,\s*([\d.]+)\s*,\s*([\d.-]+)\s*\)$/i
+
 export function stripPrefix(name: string): string {
 	return name.split(' ').slice(1).join(' ')
 }
@@ -106,9 +111,7 @@ export function reconstructLightDark(light: string, dark: string): string {
  */
 export function isCubicBezierString(value: unknown): boolean {
 	if (typeof value !== 'string') return false
-	return /^cubic-bezier\(\s*[\d.]+\s*,\s*[\d.-]+\s*,\s*[\d.]+\s*,\s*[\d.-]+\s*\)$/i.test(
-		value.trim(),
-	)
+	return CUBIC_BEZIER_TEST_REGEX.test(value.trim())
 }
 
 /**
@@ -116,10 +119,7 @@ export function isCubicBezierString(value: unknown): boolean {
  * @example parseCubicBezier('cubic-bezier(0.25, 0.1, 0.25, 1)') returns [0.25, 0.1, 0.25, 1]
  */
 export function parseCubicBezier(value: string): [number, number, number, number] | undefined {
-	const match =
-		/^cubic-bezier\(\s*([\d.]+)\s*,\s*([\d.-]+)\s*,\s*([\d.]+)\s*,\s*([\d.-]+)\s*\)$/i.exec(
-			value.trim(),
-		)
+	const match = CUBIC_BEZIER_PARSE_REGEX.exec(value.trim())
 
 	if (!match) {
 		return undefined

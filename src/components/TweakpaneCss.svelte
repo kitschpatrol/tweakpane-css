@@ -2,12 +2,13 @@
 	// Suffix constants for light-dark variants
 	const PRELOAD_LIGHT_SUFFIX = ':light'
 	const PRELOAD_DARK_SUFFIX = ':dark'
+	// eslint-disable-next-line regexp/no-unused-capturing-group
+	const UNITS_REGEX = /^(-?[\d.]+)\s?([%a-z]*)$/i
 
 	function getUnits(value: string): string | undefined {
 		// Don't get confused by hex colors or complex expressions
 		if (Number.isNaN(Number.parseFloat(value))) return ''
-		// eslint-disable-next-line regexp/no-unused-capturing-group
-		const match = /^(-?[\d.]+)\s?([%a-z]*)$/i.exec(value)
+		const match = UNITS_REGEX.exec(value)
 		return match?.[2]
 	}
 

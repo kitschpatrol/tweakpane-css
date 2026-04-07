@@ -10,6 +10,10 @@ import qs from 'qs'
 import { mount } from 'svelte'
 import TweakpaneCss, { preload } from './components/TweakpaneCss.svelte'
 
+// Revisit these warnings once we have tests
+const NUMERIC_STRING_REGEX =
+	// eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/prefer-question-quantifier, regexp/no-useless-non-capturing-group, regexp/no-empty-alternative
+	/^(?:-[1-9](?:\d{0,2}(?:,\d{3})+|\d*)|(?:0|(?:[1-9](?:\d{0,2}(?:,\d{3})+|\d*))))(?:.\d+|)$/
 // Qs vs query-string is tricky, but going with qs for now so we don't have to
 // flatten the options object
 // Full query string of TweakpaneCSS Svelte component props:
@@ -36,14 +40,7 @@ void elementReady('body').then((element) => {
 			charset: string,
 			type: 'key' | 'value',
 		) {
-			if (
-				type === 'value' &&
-				// Revisit these warnings once we have tests
-				// eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/no-useless-non-capturing-group, regexp/prefer-question-quantifier, regexp/no-empty-alternative
-				/^(?:-[1-9](?:\d{0,2}(?:,\d{3})+|\d*)|(?:0|(?:[1-9](?:\d{0,2}(?:,\d{3})+|\d*))))(?:.\d+|)$/.test(
-					string_,
-				)
-			) {
+			if (type === 'value' && NUMERIC_STRING_REGEX.test(string_)) {
 				return Number.parseFloat(string_)
 			}
 
