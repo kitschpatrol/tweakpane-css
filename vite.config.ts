@@ -29,6 +29,9 @@ export default defineConfig(({ mode }) => {
 				},
 			},
 		},
+		optimizeDeps: {
+			exclude: ['svelte-tweakpane-ui'],
+		},
 		server: {
 			open: true,
 			watch: {
