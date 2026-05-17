@@ -30,42 +30,43 @@
 	"scripts": {
 		"build": "vite build",
 		"check": "svelte-check --tsconfig ./tsconfig.build.json",
-		"clean": "rm pnpm-lock.yaml ; git clean -fdX",
+		"clean": "shx rm -f pnpm-lock.yaml && git clean -fdX -e !.claude/",
 		"dev": "npm-run-all --parallel dev:*",
 		"dev:build": "vite build --watch",
 		"dev:serve": "vite",
 		"fix": "ksc fix",
-		"lint": "ksc lint && pnpm run check",
+		"lint": "ksc lint && pnpm check",
 		"preview": "vite preview",
-		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
+		"release": "bumpp --commit 'Release: %s' && pnpm build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') pnpm publish",
 		"test": "echo \"No tests specified\" && exit 0"
 	},
 	"devDependencies": {
-		"@kitschpatrol/shared-config": "^7.1.0",
-		"@sveltejs/vite-plugin-svelte": "^7.0.0",
+		"@kitschpatrol/shared-config": "^7.6.1",
+		"@sveltejs/vite-plugin-svelte": "^7.1.2",
 		"@tsconfig/svelte": "^5.0.8",
-		"@types/qs": "^6.15.0",
-		"bumpp": "^11.0.1",
+		"@types/qs": "^6.15.1",
+		"bumpp": "^11.1.0",
 		"color-parse": "^2.0.2",
 		"element-ready": "^9.0.2",
 		"npm-run-all": "^4.1.5",
-		"qs": "^6.15.0",
-		"svelte": "^5.55.1",
-		"svelte-check": "^4.4.6",
+		"qs": "^6.15.2",
+		"shx": "^0.4.0",
+		"svelte": "^5.55.7",
+		"svelte-check": "^4.4.8",
 		"svelte-persisted-store": "^0.12.0",
-		"svelte-tweakpane-ui": "1.6.0-preview.5",
+		"svelte-tweakpane-ui": "1.6.0-preview.8",
 		"typescript": "~5.9.3",
-		"vite": "^8.0.5",
+		"vite": "^8.0.13",
 		"vite-plugin-live-reload": "^3.1.0"
 	},
-	"packageManager": "pnpm@10.33.0",
+	"packageManager": "pnpm@11.1.2",
 	"engines": {
 		"node": ">=20.9.0"
 	},
 	"devEngines": {
 		"runtime": {
 			"name": "node",
-			"version": ">=22.18.0"
+			"version": ">=22.22.2"
 		}
 	}
 }

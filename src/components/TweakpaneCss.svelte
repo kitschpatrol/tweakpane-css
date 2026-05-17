@@ -7,7 +7,10 @@
 
 	function getUnits(value: string): string | undefined {
 		// Don't get confused by hex colors or complex expressions
-		if (Number.isNaN(Number.parseFloat(value))) return ''
+		if (Number.isNaN(Number.parseFloat(value))) {
+			return ''
+		}
+
 		const match = UNITS_REGEX.exec(value)
 		return match?.[2]
 	}
@@ -44,7 +47,10 @@
 					const baseKey = preloadGetBaseVariableName(key)
 
 					// Skip if we've already processed this base variable
-					if (processedBases.has(baseKey)) continue
+					if (processedBases.has(baseKey)) {
+						continue
+					}
+
 					processedBases.add(baseKey)
 
 					const lightKey = `${baseKey}${PRELOAD_LIGHT_SUFFIX}`
@@ -180,7 +186,9 @@
 
 	/**
 	 * Get the base variable name without light/dark suffix
+	 *
 	 * @param key The variable name
+	 *
 	 * @returns The base variable name without light/dark suffix
 	 */
 	function getBaseVariableName(key: string): string {
@@ -197,7 +205,9 @@
 
 	/**
 	 * Check if a key is a light or dark variant
+	 *
 	 * @param key The variable name
+	 *
 	 * @returns True if the key is a light or dark variant
 	 */
 	function isLightDarkKey(key: string): boolean {
@@ -206,7 +216,9 @@
 
 	/**
 	 * Check if a store value is a cubic-bezier tuple
+	 *
 	 * @param value Stored value
+	 *
 	 * @returns True if the value is a cubic-bezier tuple
 	 */
 	function isCubicBezierTuple(value: StoreValue): value is [number, number, number, number] {
@@ -215,8 +227,10 @@
 
 	/**
 	 * Apply autoFolders grouping to a list of controls
+	 *
 	 * @param controls The controls to apply autoFolders to
 	 * @param options The options for the autoFolders
+	 *
 	 * @returns The auto-folder controls
 	 */
 	function applyAutoFolders(controls: ControlPlan[], options: Options): Plan[] {
@@ -257,7 +271,10 @@
 		cssVariableKeys: string[] | undefined,
 		options: Options,
 	): Plan[] {
-		if (cssVariableKeys === undefined) return []
+		if (cssVariableKeys === undefined) {
+			return []
+		}
+
 		// Sort if needed
 		const keys = options.sortNames ? cssVariableKeys.toSorted() : cssVariableKeys
 
@@ -375,6 +392,7 @@
 			) {
 				yield rule
 			}
+
 			if (rule instanceof CSSGroupingRule) {
 				yield* getRootStyleRules(rule.cssRules)
 			}
@@ -497,7 +515,10 @@
 	}
 
 	function updateCssVariableKeys(store: Record<string, StoreValue>) {
-		if (!store) return
+		if (!store) {
+			return
+		}
+
 		const latestKeys = Object.keys(store)
 
 		if (!arraysEqual(latestKeys, cssVariableKeys)) {
@@ -506,9 +527,12 @@
 	}
 
 	/**
-	 * Get the final CSS value for a variable, handling light-dark and cubic-bezier reconstruction
+	 * Get the final CSS value for a variable, handling light-dark and
+	 * cubic-bezier reconstruction
+	 *
 	 * @param store The store to get the value from
 	 * @param variableName The variable name to get the value for
+	 *
 	 * @returns The final CSS value for the variable
 	 */
 	function getFinalCssValue(
@@ -554,7 +578,9 @@
 
 	/**
 	 * Get all processed CSS variables, grouping light-dark pairs
+	 *
 	 * @param store The store to get the variables from
+	 *
 	 * @returns The processed CSS variables
 	 */
 	function getAllProcessedCssVariables(
@@ -567,7 +593,10 @@
 			const baseKey = getBaseVariableName(key)
 
 			// Skip if we've already processed this base variable
-			if (processedBases.has(baseKey)) continue
+			if (processedBases.has(baseKey)) {
+				continue
+			}
+
 			processedBases.add(baseKey)
 
 			const processed = getFinalCssValue(store, baseKey)

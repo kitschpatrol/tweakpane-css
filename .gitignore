@@ -2,12 +2,13 @@
 # Also used by CSpell, Stylelint, and ESLint
 
 # @kitschpatrol/repo-config boilerplate
+!.env.example
 .astro/
 .DS_Store
 .env
 .env.*
-!.env.example
 .eslint-config-inspector
+.pnpm-store/
 .svelte-kit/
 {tmp,temp}/
 **/*.min.js
@@ -20,4 +21,4 @@ node_modules/
 vendor/
 
 # Customizations
-/.claude
+.claude/

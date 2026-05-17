@@ -46,7 +46,10 @@ export function cleanName(name: string): string {
 
 // TODO this needs to be more robust
 export function isColorString(value: unknown): boolean {
-	if (typeof value !== 'string') return false
+	if (typeof value !== 'string') {
+		return false
+	}
+
 	const { values } = parse(value)
 	return values.length > 0
 }
@@ -60,8 +63,10 @@ export function isLightDarkValue(value: string): boolean {
 
 /**
  * Parse a light-dark() CSS function into its light and dark components
- * @example parseLightDark('light-dark(oklch(100% 0 0deg), oklch(16.84% 0 0deg))')
- * // Returns { light: 'oklch(100% 0 0deg)', dark: 'oklch(16.84% 0 0deg)' }
+ *
+ * @example
+ * 	parseLightDark('light-dark(oklch(100% 0 0deg), oklch(16.84% 0 0deg))')
+ * 	// Returns { light: 'oklch(100% 0 0deg)', dark: 'oklch(16.84% 0 0deg)' }
  */
 export function parseLightDark(value: string): undefined | { dark: string; light: string } {
 	const trimmed = value.trim()
@@ -110,13 +115,18 @@ export function reconstructLightDark(light: string, dark: string): string {
  * Check if a CSS value is a cubic-bezier() function
  */
 export function isCubicBezierString(value: unknown): boolean {
-	if (typeof value !== 'string') return false
+	if (typeof value !== 'string') {
+		return false
+	}
+
 	return CUBIC_BEZIER_TEST_REGEX.test(value.trim())
 }
 
 /**
  * Parse a cubic-bezier() CSS function into an array of 4 numbers
- * @example parseCubicBezier('cubic-bezier(0.25, 0.1, 0.25, 1)') returns [0.25, 0.1, 0.25, 1]
+ *
+ * @example
+ * 	parseCubicBezier('cubic-bezier(0.25, 0.1, 0.25, 1)') returns [0.25, 0.1, 0.25, 1]
  */
 export function parseCubicBezier(value: string): [number, number, number, number] | undefined {
 	const match = CUBIC_BEZIER_PARSE_REGEX.exec(value.trim())

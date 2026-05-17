@@ -7,7 +7,7 @@
 <!-- badges -->
 
 [![NPM Package tweakpane-css](https://img.shields.io/npm/v/tweakpane-css.svg)](https://npmjs.com/package/tweakpane-css)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit/)
 [![CI](https://github.com/kitschpatrol/tweakpane-css/actions/workflows/ci.yml/badge.svg)](https://github.com/kitschpatrol/tweakpane-css/actions/workflows/ci.yml)
 
 <!-- /badges -->
@@ -179,10 +179,14 @@ Thanks to [Hiroki Kokubun](https://cocopon.me) for the excellent Tweakpane libra
 
 ## Contributing
 
-[Issues](https://github.com/kitschpatrol/tweakpane-css/issues) and pull requests are welcome.
+[Issues](https://github.com/kitschpatrol/tweakpane-css/issues) are welcome and appreciated.
+
+Please open an issue to discuss changes before submitting a pull request. Unsolicited PRs (especially AI-generated ones) are unlikely to be merged.
+
+This repository uses [@kitschpatrol/shared-config](https://github.com/kitschpatrol/shared-config) (via its `ksc` CLI) for linting and formatting, plus [MDAT](https://github.com/kitschpatrol/mdat) for readme placeholder expansion.
 
 ## License
 
-[MIT](license.txt) © Eric Mika
+[MIT](license.txt) © [Eric Mika](https://ericmika.com/)
 
 <!-- /footer -->
