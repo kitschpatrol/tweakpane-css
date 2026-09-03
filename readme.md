@@ -6,8 +6,8 @@
 
 <!-- badges -->
 
-[![NPM Package tweakpane-css](https://img.shields.io/npm/v/tweakpane-css.svg)](https://npmjs.com/package/tweakpane-css)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit/)
+[![NPM Package tweakpane-css](https://img.shields.io/npm/v/tweakpane-css.svg)](https://www.npmjs.com/package/tweakpane-css)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
 [![CI](https://github.com/kitschpatrol/tweakpane-css/actions/workflows/ci.yml/badge.svg)](https://github.com/kitschpatrol/tweakpane-css/actions/workflows/ci.yml)
 
 <!-- /badges -->

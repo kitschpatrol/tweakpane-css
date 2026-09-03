@@ -35,42 +35,44 @@
 	 * Apply any modified styles
 	 */
 	export function preload(): void {
-		if (typeof localStorage !== 'undefined') {
-			const cssVariables = localStorage.getItem('css')
-			if (cssVariables) {
-				const store = JSON.parse(cssVariables) as Record<string, number | string>
-				// Using plain Set is appropriate here - this runs in module context before Svelte init
-				// eslint-disable-next-line svelte/prefer-svelte-reactivity
-				const processedBases = new Set<string>()
+		if (typeof localStorage === 'undefined') {
+			return
+		}
 
-				for (const key of Object.keys(store)) {
-					const baseKey = preloadGetBaseVariableName(key)
+		const cssVariables = localStorage.getItem('css')
+		if (cssVariables) {
+			const store = JSON.parse(cssVariables) as Record<string, number | string>
+			// Using plain Set is appropriate here - this runs in module context before Svelte init
+			// eslint-disable-next-line svelte/prefer-svelte-reactivity
+			const processedBases = new Set<string>()
 
-					// Skip if we've already processed this base variable
-					if (processedBases.has(baseKey)) {
-						continue
-					}
+			for (const key of Object.keys(store)) {
+				const baseKey = preloadGetBaseVariableName(key)
 
-					processedBases.add(baseKey)
+				// Skip if we've already processed this base variable
+				if (processedBases.has(baseKey)) {
+					continue
+				}
 
-					const lightKey = `${baseKey}${PRELOAD_LIGHT_SUFFIX}`
-					const darkKey = `${baseKey}${PRELOAD_DARK_SUFFIX}`
+				processedBases.add(baseKey)
 
-					// Check if this is a light-dark variable
-					if (lightKey in store && darkKey in store) {
-						const lightValue = String(store[lightKey])
-						const darkValue = String(store[darkKey])
-						document.documentElement.style.setProperty(
-							baseKey,
-							preloadReconstructLightDark(lightValue, darkValue),
-						)
-					} else if (!key.endsWith(PRELOAD_LIGHT_SUFFIX) && !key.endsWith(PRELOAD_DARK_SUFFIX)) {
-						// Regular variable
-						const units = getUnits(
-							window.getComputedStyle(document.documentElement).getPropertyValue(key),
-						)
-						document.documentElement.style.setProperty(key, `${store[key]}${units ?? ''}`)
-					}
+				const lightKey = `${baseKey}${PRELOAD_LIGHT_SUFFIX}`
+				const darkKey = `${baseKey}${PRELOAD_DARK_SUFFIX}`
+
+				// Check if this is a light-dark variable
+				if (lightKey in store && darkKey in store) {
+					const lightValue = String(store[lightKey])
+					const darkValue = String(store[darkKey])
+					document.documentElement.style.setProperty(
+						baseKey,
+						preloadReconstructLightDark(lightValue, darkValue),
+					)
+				} else if (!key.endsWith(PRELOAD_LIGHT_SUFFIX) && !key.endsWith(PRELOAD_DARK_SUFFIX)) {
+					// Regular variable
+					const units = getUnits(
+						window.getComputedStyle(document.documentElement).getPropertyValue(key),
+					)
+					document.documentElement.style.setProperty(key, `${store[key]}${units ?? ''}`)
 				}
 			}
 		}
@@ -164,16 +166,16 @@
 
 	// Stores
 	let cssVariableStore: Writable<Record<string, StoreValue>>
-	let optionsStore: Writable<Options> = persisted('css-options', options)
-	let expandedStateStore: Writable<ExpandedState> = persisted('css-expanded-state', {
+	const optionsStore: Writable<Options> = persisted('css-options', options)
+	const expandedStateStore: Writable<ExpandedState> = persisted('css-expanded-state', {
 		optionsExpandedStateKey: false,
 	})
 
 	// Track which variables use light-dark() (populated during onMount)
-	let lightDarkVariables: LightDarkMap = new SvelteSet()
+	const lightDarkVariables: LightDarkMap = new SvelteSet()
 
 	// Map of raw CSS values keyed by variable name (to detect light-dark before computed styles resolve them)
-	let rawCssValues = new SvelteMap<string, string>()
+	const rawCssValues = new SvelteMap<string, string>()
 
 	// Helper functions
 
@@ -241,10 +243,12 @@
 		const autoFolderControls: Plan[] = []
 
 		for (const [index, control] of controls.entries()) {
-			const lastPrefix = index > 0 ? cleanName(controls[index - 1].key).split(' ')[0] : undefined
-			const thisPrefix = cleanName(control.key).split(' ')[0]
+			const lastPrefix = index > 0 ? cleanName(controls[index - 1].key).split(' ', 1)[0] : undefined
+			const thisPrefix = cleanName(control.key).split(' ', 1)[0]
 			const nextPrefix =
-				index < controls.length - 1 ? cleanName(controls[index + 1].key).split(' ')[0] : undefined
+				index < controls.length - 1
+					? cleanName(controls[index + 1].key).split(' ', 1)[0]
+					: undefined
 
 			if ((lastPrefix === undefined || lastPrefix !== thisPrefix) && thisPrefix === nextPrefix) {
 				// Start folder
@@ -408,19 +412,20 @@
 		// Build a map of raw CSS values (before computed styles resolve light-dark)
 		for (const rule of rootRules) {
 			for (const property of rule.style) {
-				if (property.startsWith('--')) {
-					const rawValue = rule.style.getPropertyValue(property).trim()
-					rawCssValues.set(property, rawValue)
+				if (!property.startsWith('--')) {
+					continue
 				}
+
+				const rawValue = rule.style.getPropertyValue(property).trim()
+				rawCssValues.set(property, rawValue)
 			}
 		}
 
 		// Get all the root css variable names
 		const rootCssVariables: string[] = [...rawCssValues.keys()]
 			// Allow exclusions via props
-			.filter(
-				(style: string) =>
-					!exclude.some((excludeProperty) => cleanName(excludeProperty) === cleanName(style)),
+			.filter((style: string) =>
+				exclude.every((excludeProperty) => cleanName(excludeProperty) !== cleanName(style)),
 			)
 
 		// Build the initial store values, handling light-dark() and cubic-bezier() functions
@@ -629,43 +634,43 @@
 	{#if cssVariableStore}
 		{#each controlPlan as plan}
 			{#if plan.type === 'folder'}
-				<Folder bind:expanded={$expandedStateStore[getHash(plan.children)]} title={plan.label}>
+				<Folder title={plan.label} bind:expanded={$expandedStateStore[getHash(plan.children)]}>
 					{#each plan.children as child}
 						{#if child.type === 'control'}
 							{#if isColorString($cssVariableStore[child.key])}
 								<ColorPlus
-									bind:value={$cssVariableStore[child.key] as string}
 									label={child.label}
+									bind:value={$cssVariableStore[child.key] as string}
 								/>
 							{:else if isCubicBezierTuple($cssVariableStore[child.key])}
 								<CubicBezier
-									bind:value={$cssVariableStore[child.key] as [number, number, number, number]}
 									label={child.label}
+									bind:value={$cssVariableStore[child.key] as [number, number, number, number]}
 								/>
 							{:else}
-								<AutoValue bind:value={$cssVariableStore[child.key]} label={child.label} />
+								<AutoValue label={child.label} bind:value={$cssVariableStore[child.key]} />
 							{/if}
 						{/if}
 					{/each}
 				</Folder>
 			{:else if plan.type === 'control'}
 				{#if isColorString($cssVariableStore[plan.key])}
-					<ColorPlus bind:value={$cssVariableStore[plan.key] as string} label={plan.label} />
+					<ColorPlus label={plan.label} bind:value={$cssVariableStore[plan.key] as string} />
 				{:else if isCubicBezierTuple($cssVariableStore[plan.key])}
 					<CubicBezier
-						bind:value={$cssVariableStore[plan.key] as [number, number, number, number]}
 						label={plan.label}
+						bind:value={$cssVariableStore[plan.key] as [number, number, number, number]}
 					/>
 				{:else}
-					<AutoValue bind:value={$cssVariableStore[plan.key]} label={plan.label} />
+					<AutoValue label={plan.label} bind:value={$cssVariableStore[plan.key]} />
 				{/if}
 			{/if}
 		{/each}
 		<Separator />
 		<ButtonGrid buttons={['Copy', 'Reset']} on:click={handleClick} />
-		<Folder bind:expanded={$expandedStateStore[optionsExpandedStateKey]} title="Options">
+		<Folder title="Options" bind:expanded={$expandedStateStore[optionsExpandedStateKey]}>
 			<AutoObject bind:object={$optionsStore} />
-			<Button on:click={resetOptions} title="Reset Options" />
+			<Button title="Reset Options" on:click={resetOptions} />
 		</Folder>
 	{/if}
 </Pane>

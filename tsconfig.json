@@ -1,15 +1,5 @@
 {
-	"extends": "@tsconfig/svelte/tsconfig.json",
-	"compilerOptions": {
-		"target": "ESNext",
-		"useDefineForClassFields": true,
-		"module": "ESNext",
-		"resolveJsonModule": true,
-		"allowJs": true,
-		"checkJs": true,
-		"noEmit": true,
-		"isolatedModules": true
-	},
-	"include": ["**/*", "**/**.*"],
-	"exclude": ["**/dist/", "**/bin/"]
+	"extends": "@kitschpatrol/typescript-config/svelte",
+	"include": ["**/**.*"],
+	"exclude": ["dist/"]
 }

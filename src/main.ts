@@ -1,5 +1,4 @@
 /* eslint-disable ts/no-unsafe-call */
-/* eslint-disable unicorn/prefer-top-level-await */
 
 // IIFE wrapper for Tweakpane CSS
 
@@ -19,7 +18,7 @@ const NUMERIC_STRING_REGEX =
 // Full query string of TweakpaneCSS Svelte component props:
 // ?exclude=transform,transition,animation&options.autoFolders=true&options.includeCalculated=true&options.prettyNames=true&options.showUnits=true&options.sortNames=true
 // qs stringify options: { allowDots: true, arrayFormat: 'comma', encode: false }
-// eslint-disable-next-line ts/no-unsafe-type-assertion
+
 const queryString = new URL((document.currentScript as HTMLScriptElement).src).search
 
 // Reduces FOUC
@@ -52,7 +51,6 @@ void elementReady('body').then((element) => {
 				undefined,
 			}
 			if (type === 'value' && string_ in keywords) {
-				// eslint-disable-next-line ts/no-unsafe-type-assertion
 				return keywords[string_ as keyof typeof keywords]
 			}
 
@@ -63,7 +61,6 @@ void elementReady('body').then((element) => {
 
 	mount(TweakpaneCss, {
 		props,
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
-		target: element as HTMLElement,
+		target: element,
 	})
 })

@@ -13,5 +13,5 @@ allowBuilds:
   esbuild: true
   unrs-resolver: true
 minimumReleaseAgeExclude:
-  - svelte-tweakpane-ui@1.6.0-preview.9
-  - tweakpane-plugin-color-plus@0.4.1
+  - svelte-tweakpane-ui@1.6.0
+  - tweakpane-plugin-color-plus@0.6.1

@@ -58,7 +58,7 @@ export function isColorString(value: unknown): boolean {
  * Check if a CSS value contains a light-dark() function
  */
 export function isLightDarkValue(value: string): boolean {
-	return value.trim().startsWith('light-dark(')
+	return value.trimStart().startsWith('light-dark(')
 }
 
 /**

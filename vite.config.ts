@@ -3,8 +3,6 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { defineConfig } from 'vite'
 import { liveReload } from 'vite-plugin-live-reload'
 
-process.env.BROWSER = 'chromium'
-
 export default defineConfig(({ mode }) => {
 	const production = mode === 'production'
 
