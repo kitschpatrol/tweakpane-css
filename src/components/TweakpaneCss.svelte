@@ -3,7 +3,7 @@
 	const PRELOAD_LIGHT_SUFFIX = ':light'
 	const PRELOAD_DARK_SUFFIX = ':dark'
 	// eslint-disable-next-line regexp/no-unused-capturing-group
-	const UNITS_REGEX = /^(-?[\d.]+)\s?([%a-z]*)$/iv
+	const UNITS_REGEX = /^(-?[\d.]+)\s?([%a-z]*)$/iu
 
 	function getUnits(value: string): string | undefined {
 		// Don't get confused by hex colors or complex expressions

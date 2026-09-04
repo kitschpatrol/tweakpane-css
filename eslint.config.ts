@@ -6,6 +6,9 @@ export default eslintConfig({
 			'@html-eslint/no-inline-styles': 'off',
 		},
 	},
+	rules: {
+		'require-unicode-regexp': ['error', { requireFlag: 'u' }],
+	},
 	svelte: {
 		overrides: {
 			// Bugs when importing from subdirectories

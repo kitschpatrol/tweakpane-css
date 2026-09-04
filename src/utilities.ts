@@ -3,9 +3,9 @@
 import parse from 'color-parse'
 
 const CUBIC_BEZIER_TEST_REGEX =
-	/^cubic-bezier\(\s*[\d.]+\s*,\s*-?[\d.]+\s*,\s*[\d.]+\s*,\s*-?[\d.]+\s*\)$/iv
+	/^cubic-bezier\(\s*[\d.]+\s*,\s*-?[\d.]+\s*,\s*[\d.]+\s*,\s*-?[\d.]+\s*\)$/iu
 const CUBIC_BEZIER_PARSE_REGEX =
-	/^cubic-bezier\(\s*([\d.]+)\s*,\s*(-?[\d.]+)\s*,\s*([\d.]+)\s*,\s*(-?[\d.]+)\s*\)$/iv
+	/^cubic-bezier\(\s*([\d.]+)\s*,\s*(-?[\d.]+)\s*,\s*([\d.]+)\s*,\s*(-?[\d.]+)\s*\)$/iu
 
 export function stripPrefix(name: string): string {
 	return name.split(' ').slice(1).join(' ')
@@ -43,7 +43,7 @@ export function cleanName(name: string): string {
 	return name
 		.replace('--', '')
 		.replaceAll('-', ' ')
-		.replaceAll(/\w\S*/gv, (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase())
+		.replaceAll(/\w\S*/gu, (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase())
 }
 
 // TODO this needs to be more robust

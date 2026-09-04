@@ -12,7 +12,7 @@ import TweakpaneCss, { preload } from './components/TweakpaneCss.svelte'
 // Revisit these warnings once we have tests
 const NUMERIC_STRING_REGEX =
 	// eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/prefer-question-quantifier, regexp/no-useless-non-capturing-group, regexp/no-empty-alternative
-	/^(?:-[1-9](?:\d{0,2}(?:,\d{3})+|\d*)|(?:0|(?:[1-9](?:\d{0,2}(?:,\d{3})+|\d*))))(?:.\d+|)$/v
+	/^(?:-[1-9](?:\d{0,2}(?:,\d{3})+|\d*)|(?:0|(?:[1-9](?:\d{0,2}(?:,\d{3})+|\d*))))(?:.\d+|)$/u
 // Qs vs query-string is tricky, but going with qs for now so we don't have to
 // flatten the options object
 // Full query string of TweakpaneCSS Svelte component props:
