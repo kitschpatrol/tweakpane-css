@@ -3,10 +3,12 @@
 	const PRELOAD_LIGHT_SUFFIX = ':light'
 	const PRELOAD_DARK_SUFFIX = ':dark'
 	// eslint-disable-next-line regexp/no-unused-capturing-group
-	const UNITS_REGEX = /^(-?[\d.]+)\s?([%a-z]*)$/i
+	const UNITS_REGEX = /^(-?[\d.]+)\s?([%a-z]*)$/iv
 
 	function getUnits(value: string): string | undefined {
 		// Don't get confused by hex colors or complex expressions
+		// Number.parseFloat intentionally accepts CSS values such as `12px`.
+		// eslint-disable-next-line unicorn/prefer-number-coercion
 		if (Number.isNaN(Number.parseFloat(value))) {
 			return ''
 		}
@@ -40,13 +42,13 @@
 		}
 
 		const cssVariables = localStorage.getItem('css')
-		if (cssVariables) {
+		if (cssVariables !== null && cssVariables !== '') {
 			const store = JSON.parse(cssVariables) as Record<string, number | string>
 			// Using plain Set is appropriate here - this runs in module context before Svelte init
 			// eslint-disable-next-line svelte/prefer-svelte-reactivity
 			const processedBases = new Set<string>()
 
-			for (const key of Object.keys(store)) {
+			for (const [key, storedValue] of Object.entries(store)) {
 				const baseKey = preloadGetBaseVariableName(key)
 
 				// Skip if we've already processed this base variable
@@ -60,7 +62,7 @@
 				const darkKey = `${baseKey}${PRELOAD_DARK_SUFFIX}`
 
 				// Check if this is a light-dark variable
-				if (lightKey in store && darkKey in store) {
+				if (Object.hasOwn(store, lightKey) && Object.hasOwn(store, darkKey)) {
 					const lightValue = String(store[lightKey])
 					const darkValue = String(store[darkKey])
 					document.documentElement.style.setProperty(
@@ -72,7 +74,7 @@
 					const units = getUnits(
 						window.getComputedStyle(document.documentElement).getPropertyValue(key),
 					)
-					document.documentElement.style.setProperty(key, `${store[key]}${units ?? ''}`)
+					document.documentElement.style.setProperty(key, `${storedValue}${units ?? ''}`)
 				}
 			}
 		}
@@ -168,7 +170,7 @@
 	let cssVariableStore: Writable<Record<string, StoreValue>>
 	const optionsStore: Writable<Options> = persisted('css-options', options)
 	const expandedStateStore: Writable<ExpandedState> = persisted('css-expanded-state', {
-		optionsExpandedStateKey: false,
+		[optionsExpandedStateKey]: false,
 	})
 
 	// Track which variables use light-dark() (populated during onMount)
@@ -223,37 +225,40 @@
 	 *
 	 * @returns True if the value is a cubic-bezier tuple
 	 */
-	function isCubicBezierTuple(value: StoreValue): value is [number, number, number, number] {
+	function isCubicBezierTuple(value: unknown): value is [number, number, number, number] {
 		return Array.isArray(value) && value.length === 4 && value.every((v) => typeof v === 'number')
+	}
+
+	function getControlPrefix(control: ControlPlan): string {
+		return cleanName(control.key).split(' ', 1)[0] ?? ''
 	}
 
 	/**
 	 * Apply autoFolders grouping to a list of controls
 	 *
 	 * @param controls The controls to apply autoFolders to
-	 * @param options The options for the autoFolders
+	 * @param currentOptions The options for the autoFolders
 	 *
 	 * @returns The auto-folder controls
 	 */
-	function applyAutoFolders(controls: ControlPlan[], options: Options): Plan[] {
-		if (!options.autoFolders || controls.length <= 1) {
+	function applyAutoFolders(controls: ControlPlan[], currentOptions: Options): Plan[] {
+		if (!currentOptions.autoFolders || controls.length <= 1) {
 			return controls
 		}
 
 		const autoFolderControls: Plan[] = []
 
 		for (const [index, control] of controls.entries()) {
-			const lastPrefix = index > 0 ? cleanName(controls[index - 1].key).split(' ', 1)[0] : undefined
-			const thisPrefix = cleanName(control.key).split(' ', 1)[0]
-			const nextPrefix =
-				index < controls.length - 1
-					? cleanName(controls[index + 1].key).split(' ', 1)[0]
-					: undefined
+			const lastControl = index === 0 ? undefined : controls.at(index - 1)
+			const nextControl = controls.at(index + 1)
+			const lastPrefix = lastControl === undefined ? undefined : getControlPrefix(lastControl)
+			const thisPrefix = getControlPrefix(control)
+			const nextPrefix = nextControl === undefined ? undefined : getControlPrefix(nextControl)
 
-			if ((lastPrefix === undefined || lastPrefix !== thisPrefix) && thisPrefix === nextPrefix) {
+			if (thisPrefix === nextPrefix && lastPrefix !== thisPrefix) {
 				// Start folder
 				autoFolderControls.push({
-					children: [options.prettyNames ? stripLabelPrefix(control) : control],
+					children: [currentOptions.prettyNames ? stripLabelPrefix(control) : control],
 					expanded: false,
 					label: thisPrefix,
 					type: 'folder',
@@ -261,7 +266,7 @@
 			} else if (lastPrefix === thisPrefix) {
 				// Add to folder
 				const lastFolder = autoFolderControls.at(-1) as FolderPlan
-				lastFolder.children.push(options.prettyNames ? stripLabelPrefix(control) : control)
+				lastFolder.children.push(currentOptions.prettyNames ? stripLabelPrefix(control) : control)
 			} else {
 				// Push at top level
 				autoFolderControls.push(control)
@@ -273,14 +278,14 @@
 
 	function getControlPlanFromStore(
 		cssVariableKeys: string[] | undefined,
-		options: Options,
+		currentOptions: Options,
 	): Plan[] {
 		if (cssVariableKeys === undefined) {
 			return []
 		}
 
 		// Sort if needed
-		const keys = options.sortNames ? cssVariableKeys.toSorted() : cssVariableKeys
+		const keys = currentOptions.sortNames ? cssVariableKeys.toSorted() : cssVariableKeys
 
 		// Separate light-dark keys from regular keys
 		const lightKeys: string[] = []
@@ -313,7 +318,7 @@
 					}
 				}
 
-				if (!options.includeCalculated && valueToCheck.includes('calc(')) {
+				if (!currentOptions.includeCalculated && valueToCheck.includes('calc(')) {
 					return accumulator
 				}
 
@@ -321,16 +326,13 @@
 				const units = getUnits(valueToCheck)
 
 				// Build the label, optionally stripping the :light/:dark suffix
-				let displayKey = key
-				if (stripSuffix) {
-					displayKey = baseKey
-				}
+				const displayKey = stripSuffix ? baseKey : key
 
 				return [
 					...accumulator,
 					{
 						key,
-						label: `${options.prettyNames ? cleanName(displayKey) : displayKey}${units && options.showUnits ? ` (${units})` : ''}`,
+						label: `${currentOptions.prettyNames ? cleanName(displayKey) : displayKey}${units !== undefined && units !== '' && currentOptions.showUnits === true ? ` (${units})` : ''}`,
 						type: 'control',
 					},
 				]
@@ -342,7 +344,7 @@
 		// Add Light folder if there are light-dark variables
 		if (lightKeys.length > 0) {
 			const lightControls = createControls(lightKeys, true)
-			const lightContent = applyAutoFolders(lightControls, options)
+			const lightContent = applyAutoFolders(lightControls, currentOptions)
 
 			plan.push({
 				children: lightContent.flatMap((item) => (item.type === 'folder' ? item.children : [item])),
@@ -355,7 +357,7 @@
 		// Add Dark folder if there are light-dark variables
 		if (darkKeys.length > 0) {
 			const darkControls = createControls(darkKeys, true)
-			const darkContent = applyAutoFolders(darkControls, options)
+			const darkContent = applyAutoFolders(darkControls, currentOptions)
 
 			plan.push({
 				children: darkContent.flatMap((item) => (item.type === 'folder' ? item.children : [item])),
@@ -367,24 +369,26 @@
 
 		// Add regular controls (with autoFolders if enabled)
 		const regularControls = createControls(regularKeys)
-		const regularPlan = applyAutoFolders(regularControls, options)
+		const regularPlan = applyAutoFolders(regularControls, currentOptions)
 		plan.push(...regularPlan)
 
 		return plan
 	}
 
-	function updatePlanForStore(cssVariableKeys: string[] | undefined, options: Options) {
+	async function updatePlanForStore(
+		cssVariableKeys: string[] | undefined,
+		currentOptions: Options,
+	): Promise<void> {
 		controlPlan = []
 
 		// Some horrible thing is messing up the order of the controls after
 		// some are removed from a folder... this fixes it
-		tick()
-			.then(() => {
-				controlPlan = getControlPlanFromStore(cssVariableKeys, options)
-			})
-			.catch((error: unknown) => {
-				console.error(`${logPrefix} Error updating plan:`, error)
-			})
+		try {
+			await tick()
+			controlPlan = getControlPlanFromStore(cssVariableKeys, currentOptions)
+		} catch (error) {
+			console.error(`${logPrefix} Error updating plan:`, error)
+		}
 	}
 
 	// Recursively extract :root style rules (handles @layer, @media, @supports, etc.)
@@ -403,6 +407,17 @@
 		}
 	}
 
+	function addRawCssValues(rule: CSSStyleRule): void {
+		for (const property of rule.style) {
+			if (!property.startsWith('--')) {
+				continue
+			}
+
+			const rawValue = rule.style.getPropertyValue(property).trim()
+			rawCssValues.set(property, rawValue)
+		}
+	}
+
 	onMount(() => {
 		// Get all root CSS rules and extract raw values
 		const rootRules = [...document.styleSheets].flatMap((styleSheet) => [
@@ -411,22 +426,17 @@
 
 		// Build a map of raw CSS values (before computed styles resolve light-dark)
 		for (const rule of rootRules) {
-			for (const property of rule.style) {
-				if (!property.startsWith('--')) {
-					continue
-				}
-
-				const rawValue = rule.style.getPropertyValue(property).trim()
-				rawCssValues.set(property, rawValue)
-			}
+			addRawCssValues(rule)
 		}
 
 		// Get all the root css variable names
-		const rootCssVariables: string[] = [...rawCssValues.keys()]
+		const rootCssVariables: string[] = rawCssValues
+			.keys()
 			// Allow exclusions via props
 			.filter((style: string) =>
 				exclude.every((excludeProperty) => cleanName(excludeProperty) !== cleanName(style)),
 			)
+			.toArray()
 
 		// Build the initial store values, handling light-dark() and cubic-bezier() functions
 		const initialStoreValues: Record<string, StoreValue> = {}
@@ -520,10 +530,6 @@
 	}
 
 	function updateCssVariableKeys(store: Record<string, StoreValue>) {
-		if (!store) {
-			return
-		}
-
 		const latestKeys = Object.keys(store)
 
 		if (!arraysEqual(latestKeys, cssVariableKeys)) {
@@ -553,7 +559,7 @@
 		const darkKey = `${variableName}${DARK_SUFFIX}`
 
 		// Check if this variable has light-dark variants in the store
-		if (lightKey in store && darkKey in store) {
+		if (Object.hasOwn(store, lightKey) && Object.hasOwn(store, darkKey)) {
 			const lightValue = String(store[lightKey])
 			const darkValue = String(store[darkKey])
 			return {
@@ -563,6 +569,9 @@
 		}
 
 		const storeValue = store[variableName]
+		if (storeValue === undefined) {
+			return undefined
+		}
 
 		// Check if this is a cubic-bezier array
 		if (isCubicBezierTuple(storeValue)) {
@@ -614,7 +623,7 @@
 	}
 
 	// Reactive
-	$: if (cssVariableStore) {
+	$: if (cssVariableStore !== undefined) {
 		// Set the css variables on the document, handling light-dark reconstruction
 		const processed = getAllProcessedCssVariables($cssVariableStore)
 		for (const { value, variableName } of processed) {
@@ -627,7 +636,7 @@
 
 	// $: $optionsStore = options
 	$: updateCssVariableKeys($cssVariableStore)
-	$: updatePlanForStore(cssVariableKeys, $optionsStore)
+	$: void updatePlanForStore(cssVariableKeys, $optionsStore)
 </script>
 
 <Pane localStoreId="tweakpane-css" position="draggable" title="Tweakpane CSS">
@@ -648,7 +657,7 @@
 									bind:value={$cssVariableStore[child.key] as [number, number, number, number]}
 								/>
 							{:else}
-								<AutoValue label={child.label} bind:value={$cssVariableStore[child.key]} />
+								<AutoValue label={child.label} bind:value={$cssVariableStore[child.key]!} />
 							{/if}
 						{/if}
 					{/each}
@@ -662,12 +671,14 @@
 						bind:value={$cssVariableStore[plan.key] as [number, number, number, number]}
 					/>
 				{:else}
-					<AutoValue label={plan.label} bind:value={$cssVariableStore[plan.key]} />
+					<AutoValue label={plan.label} bind:value={$cssVariableStore[plan.key]!} />
 				{/if}
 			{/if}
 		{/each}
 		<Separator />
 		<ButtonGrid buttons={['Copy', 'Reset']} on:click={handleClick} />
+		<!-- Two-way binding must write through to the keyed expansion-state record. -->
+		<!-- eslint-disable-next-line svelte/prefer-destructured-store-props -->
 		<Folder title="Options" bind:expanded={$expandedStateStore[optionsExpandedStateKey]}>
 			<AutoObject bind:object={$optionsStore} />
 			<Button title="Reset Options" on:click={resetOptions} />

@@ -12,7 +12,7 @@ import TweakpaneCss, { preload } from './components/TweakpaneCss.svelte'
 // Revisit these warnings once we have tests
 const NUMERIC_STRING_REGEX =
 	// eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/prefer-question-quantifier, regexp/no-useless-non-capturing-group, regexp/no-empty-alternative
-	/^(?:-[1-9](?:\d{0,2}(?:,\d{3})+|\d*)|(?:0|(?:[1-9](?:\d{0,2}(?:,\d{3})+|\d*))))(?:.\d+|)$/
+	/^(?:-[1-9](?:\d{0,2}(?:,\d{3})+|\d*)|(?:0|(?:[1-9](?:\d{0,2}(?:,\d{3})+|\d*))))(?:.\d+|)$/v
 // Qs vs query-string is tricky, but going with qs for now so we don't have to
 // flatten the options object
 // Full query string of TweakpaneCSS Svelte component props:
@@ -40,6 +40,8 @@ void elementReady('body').then((element) => {
 			type: 'key' | 'value',
 		) {
 			if (type === 'value' && NUMERIC_STRING_REGEX.test(string_)) {
+				// Number.parseFloat preserves the existing handling of comma-formatted values.
+				// eslint-disable-next-line unicorn/prefer-number-coercion
 				return Number.parseFloat(string_)
 			}
 
@@ -50,7 +52,7 @@ void elementReady('body').then((element) => {
 				true: true,
 				undefined,
 			}
-			if (type === 'value' && string_ in keywords) {
+			if (type === 'value' && Object.hasOwn(keywords, string_)) {
 				return keywords[string_ as keyof typeof keywords]
 			}
 
@@ -58,6 +60,9 @@ void elementReady('body').then((element) => {
 		},
 		ignoreQueryPrefix: true,
 	})
+	if (element === undefined) {
+		return
+	}
 
 	mount(TweakpaneCss, {
 		props,

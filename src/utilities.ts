@@ -3,9 +3,9 @@
 import parse from 'color-parse'
 
 const CUBIC_BEZIER_TEST_REGEX =
-	/^cubic-bezier\(\s*[\d.]+\s*,\s*[\d.-]+\s*,\s*[\d.]+\s*,\s*[\d.-]+\s*\)$/i
+	/^cubic-bezier\(\s*[\d.]+\s*,\s*-?[\d.]+\s*,\s*[\d.]+\s*,\s*-?[\d.]+\s*\)$/iv
 const CUBIC_BEZIER_PARSE_REGEX =
-	/^cubic-bezier\(\s*([\d.]+)\s*,\s*([\d.-]+)\s*,\s*([\d.]+)\s*,\s*([\d.-]+)\s*\)$/i
+	/^cubic-bezier\(\s*([\d.]+)\s*,\s*(-?[\d.]+)\s*,\s*([\d.]+)\s*,\s*(-?[\d.]+)\s*\)$/iv
 
 export function stripPrefix(name: string): string {
 	return name.split(' ').slice(1).join(' ')
@@ -23,6 +23,8 @@ export async function copyToClipboard(text: string, logPrefix = ''): Promise<voi
 
 export function parseNumberOrReturnOriginal(text: string): number | string {
 	// Also strips suffixed units
+	// Number.parseFloat intentionally accepts CSS values such as `12px`.
+	// eslint-disable-next-line unicorn/prefer-number-coercion
 	const parsed = Number.parseFloat(text)
 	return Number.isNaN(parsed) ? text : parsed
 }
@@ -41,7 +43,7 @@ export function cleanName(name: string): string {
 	return name
 		.replace('--', '')
 		.replaceAll('-', ' ')
-		.replaceAll(/\w\S*/g, (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase())
+		.replaceAll(/\w\S*/gv, (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase())
 }
 
 // TODO this needs to be more robust
@@ -135,12 +137,7 @@ export function parseCubicBezier(value: string): [number, number, number, number
 		return undefined
 	}
 
-	return [
-		Number.parseFloat(match[1]),
-		Number.parseFloat(match[2]),
-		Number.parseFloat(match[3]),
-		Number.parseFloat(match[4]),
-	]
+	return [Number(match[1]), Number(match[2]), Number(match[3]), Number(match[4])]
 }
 
 /**
