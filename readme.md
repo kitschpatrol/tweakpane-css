@@ -63,7 +63,7 @@ You can add it to your project in three different ways:
 npm install --save-dev tweakpane-css
 ```
 
-2. Add the script tag to the `head` of your template. Most casually, if you're only using Tweakpane CSS in local development, you can link right to the file in `node_modules`:
+2. Add the script tag to the `head` of your template, after any stylesheets or `style` elements that declare the CSS variables. Most casually, if you're only using Tweakpane CSS in local development, you can link right to the file in `node_modules`:
 
 ```html
 <script src="main.js"></script>
@@ -79,7 +79,7 @@ For example, in an Astro project, you have to add an `is:raw` to the script tag 
 
 ### CDN
 
-Add this script tag to the `head` of your template:
+Add this script tag to the `head` of your template, after the styles that declare the CSS variables:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/tweakpane-css"></script>

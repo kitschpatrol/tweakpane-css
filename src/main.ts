@@ -21,10 +21,9 @@ const NUMERIC_STRING_REGEX =
 
 const queryString = new URL((document.currentScript as HTMLScriptElement).src).search
 
-// Reduces FOUC
-void elementReady(':root').then(() => {
-	preload()
-})
+// Restore persisted values while this classic script is still blocking the parser,
+// so the browser cannot paint the original values first.
+preload()
 
 // Add the svelte component to the DOM
 void elementReady('body').then((element) => {
