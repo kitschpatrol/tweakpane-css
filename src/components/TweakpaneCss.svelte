@@ -96,6 +96,7 @@
 	import Pane from 'svelte-tweakpane-ui/Pane.svelte'
 	import Separator from 'svelte-tweakpane-ui/Separator.svelte'
 	import { SvelteMap, SvelteSet } from 'svelte/reactivity'
+	import { writable } from 'svelte/store'
 	import {
 		arraysEqual,
 		cleanName,
@@ -167,7 +168,8 @@
 	type StoreValue = [number, number, number, number] | number | string
 
 	// Stores
-	let cssVariableStore: Writable<Record<string, StoreValue>>
+	let cssVariableStore = writable<Record<string, StoreValue>>({})
+	let isCssVariableStoreReady = false
 	const optionsStore: Writable<Options> = persisted('css-options', options)
 	const expandedStateStore: Writable<ExpandedState> = persisted('css-expanded-state', {
 		[optionsExpandedStateKey]: false,
@@ -484,6 +486,8 @@
 				delete $cssVariableStore[key]
 			}
 		}
+
+		isCssVariableStoreReady = true
 	})
 
 	// Buttons
@@ -623,7 +627,7 @@
 	}
 
 	// Reactive
-	$: if (cssVariableStore !== undefined) {
+	$: if (isCssVariableStoreReady) {
 		// Set the css variables on the document, handling light-dark reconstruction
 		const processed = getAllProcessedCssVariables($cssVariableStore)
 		for (const { value, variableName } of processed) {
@@ -635,12 +639,16 @@
 	let cssVariableKeys: string[] = []
 
 	// $: $optionsStore = options
-	$: updateCssVariableKeys($cssVariableStore)
-	$: void updatePlanForStore(cssVariableKeys, $optionsStore)
+	$: if (isCssVariableStoreReady) {
+		updateCssVariableKeys($cssVariableStore)
+	}
+	$: if (isCssVariableStoreReady) {
+		void updatePlanForStore(cssVariableKeys, $optionsStore)
+	}
 </script>
 
 <Pane localStoreId="tweakpane-css" position="draggable" title="Tweakpane CSS">
-	{#if cssVariableStore}
+	{#if isCssVariableStoreReady}
 		{#each controlPlan as plan}
 			{#if plan.type === 'folder'}
 				<Folder title={plan.label} bind:expanded={$expandedStateStore[getHash(plan.children)]}>
