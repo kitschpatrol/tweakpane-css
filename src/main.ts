@@ -51,11 +51,9 @@ void elementReady('body').then((element) => {
 				true: true,
 				undefined,
 			}
-			if (type === 'value' && Object.hasOwn(keywords, string_)) {
-				return keywords[string_ as keyof typeof keywords]
-			}
-
-			return defaultDecoder(string_, defaultDecoder, charset)
+			return type === 'value' && Object.hasOwn(keywords, string_)
+				? keywords[string_ as keyof typeof keywords]
+				: defaultDecoder(string_, defaultDecoder, charset)
 		},
 		ignoreQueryPrefix: true,
 	})

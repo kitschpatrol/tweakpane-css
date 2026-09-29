@@ -117,11 +117,7 @@ export function reconstructLightDark(light: string, dark: string): string {
  * Check if a CSS value is a cubic-bezier() function
  */
 export function isCubicBezierString(value: unknown): boolean {
-	if (typeof value !== 'string') {
-		return false
-	}
-
-	return CUBIC_BEZIER_TEST_REGEX.test(value.trim())
+	return typeof value === 'string' && CUBIC_BEZIER_TEST_REGEX.test(value.trim())
 }
 
 /**
@@ -133,11 +129,9 @@ export function isCubicBezierString(value: unknown): boolean {
 export function parseCubicBezier(value: string): [number, number, number, number] | undefined {
 	const match = CUBIC_BEZIER_PARSE_REGEX.exec(value.trim())
 
-	if (!match) {
-		return undefined
-	}
-
-	return [Number(match[1]), Number(match[2]), Number(match[3]), Number(match[4])]
+	return match
+		? [Number(match[1]), Number(match[2]), Number(match[3]), Number(match[4])]
+		: undefined
 }
 
 /**

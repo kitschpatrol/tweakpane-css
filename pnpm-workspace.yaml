@@ -1,3 +1,7 @@
+allowBuilds:
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@kitschpatrol/*'
 publicHoistPattern:
   - '@kitschpatrol/repo-config'
   - '@kitschpatrol/typescript-config'
@@ -9,9 +13,3 @@ publicHoistPattern:
   - '*prettier*'
   - '*remark*'
   - '*stylelint*'
-allowBuilds:
-  esbuild: true
-  unrs-resolver: true
-minimumReleaseAgeExclude:
-  - svelte-tweakpane-ui@1.6.0
-  - tweakpane-plugin-color-plus@0.6.1
