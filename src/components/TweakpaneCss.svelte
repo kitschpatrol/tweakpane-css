@@ -375,10 +375,11 @@
 		cssVariableKeys: string[] | undefined,
 		currentOptions: Options,
 	): Promise<void> {
+		// Remount every control instead of letting the keyed each blocks move
+		// them: svelte-tweakpane-ui fixes a blade's index in the pane when it
+		// mounts, so a moved DOM node leaves its blade in the old position.
 		controlPlan = []
 
-		// Some horrible thing is messing up the order of the controls after
-		// some are removed from a folder... this fixes it
 		try {
 			await tick()
 			controlPlan = getControlPlanFromStore(cssVariableKeys, currentOptions)

@@ -37,10 +37,11 @@
 		"lint": "ksc lint",
 		"preview": "vite preview",
 		"release": "bumpp --commit 'Release: %s' && pnpm build && pnpm publish --otp $(op item get npm --otp)",
-		"test": "echo \"No tests specified\" && exit 0"
+		"test": "vite build && playwright test"
 	},
 	"devDependencies": {
 		"@kitschpatrol/shared-config": "^8.10.1",
+		"@playwright/test": "^1.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@types/qs": "^6.15.1",
 		"bumpp": "^12.3.0",

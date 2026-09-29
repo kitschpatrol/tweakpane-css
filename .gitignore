@@ -22,3 +22,5 @@ vendor/
 
 # Customizations
 .claude/
+playwright-report/
+test-results/
