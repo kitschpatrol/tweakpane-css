@@ -644,44 +644,57 @@
 	}
 </script>
 
-<Pane localStoreId="tweakpane-css" position="draggable" title="Tweakpane CSS">
-	{#if isCssVariableStoreReady}
-		{#each controlPlan as plan (plan.type === 'folder' ? getHash(plan.children) : plan.key)}
-			{#if plan.type === 'folder'}
-				<Folder title={plan.label} bind:expanded={$expandedStateStore[getHash(plan.children)]}>
-					{#each plan.children as child (child.key)}
-						{#if isColorString($cssVariableStore[child.key])}
-							<ColorPlus label={child.label} bind:value={$cssVariableStore[child.key] as string} />
-						{:else if isCubicBezierTuple($cssVariableStore[child.key])}
-							<CubicBezier
-								label={child.label}
-								bind:value={$cssVariableStore[child.key] as [number, number, number, number]}
-							/>
-						{:else}
-							<AutoValue label={child.label} bind:value={$cssVariableStore[child.key]!} />
-						{/if}
-					{/each}
-				</Folder>
-			{:else if plan.type === 'control'}
-				{#if isColorString($cssVariableStore[plan.key])}
-					<ColorPlus label={plan.label} bind:value={$cssVariableStore[plan.key] as string} />
-				{:else if isCubicBezierTuple($cssVariableStore[plan.key])}
-					<CubicBezier
-						label={plan.label}
-						bind:value={$cssVariableStore[plan.key] as [number, number, number, number]}
-					/>
-				{:else}
-					<AutoValue label={plan.label} bind:value={$cssVariableStore[plan.key]!} />
+<div
+	// Shield the pane from styles the host page lets its children inherit (e.g. a
+	// `pointer-events: none` body), without adding a box to the host page layout.
+	// TODO Remove after the next svelte-tweakpane-ui point release (> 1.6.0), which
+	// sets `pointer-events: auto` on draggable and fixed panes. Removing it also drops
+	// the reset of other inherited styles such as `user-select` and `text-transform`.
+	style:all="initial"
+	style:display="contents"
+>
+	<Pane localStoreId="tweakpane-css" position="draggable" title="Tweakpane CSS">
+		{#if isCssVariableStoreReady}
+			{#each controlPlan as plan (plan.type === 'folder' ? getHash(plan.children) : plan.key)}
+				{#if plan.type === 'folder'}
+					<Folder title={plan.label} bind:expanded={$expandedStateStore[getHash(plan.children)]}>
+						{#each plan.children as child (child.key)}
+							{#if isColorString($cssVariableStore[child.key])}
+								<ColorPlus
+									label={child.label}
+									bind:value={$cssVariableStore[child.key] as string}
+								/>
+							{:else if isCubicBezierTuple($cssVariableStore[child.key])}
+								<CubicBezier
+									label={child.label}
+									bind:value={$cssVariableStore[child.key] as [number, number, number, number]}
+								/>
+							{:else}
+								<AutoValue label={child.label} bind:value={$cssVariableStore[child.key]!} />
+							{/if}
+						{/each}
+					</Folder>
+				{:else if plan.type === 'control'}
+					{#if isColorString($cssVariableStore[plan.key])}
+						<ColorPlus label={plan.label} bind:value={$cssVariableStore[plan.key] as string} />
+					{:else if isCubicBezierTuple($cssVariableStore[plan.key])}
+						<CubicBezier
+							label={plan.label}
+							bind:value={$cssVariableStore[plan.key] as [number, number, number, number]}
+						/>
+					{:else}
+						<AutoValue label={plan.label} bind:value={$cssVariableStore[plan.key]!} />
+					{/if}
 				{/if}
-			{/if}
-		{/each}
-		<Separator />
-		<ButtonGrid buttons={['Copy', 'Reset']} on:click={handleClick} />
-		<!-- Two-way binding must write through to the keyed expansion-state record. -->
-		<!-- eslint-disable-next-line svelte/prefer-destructured-store-props -->
-		<Folder title="Options" bind:expanded={$expandedStateStore[optionsExpandedStateKey]}>
-			<AutoObject bind:object={$optionsStore} />
-			<Button title="Reset Options" on:click={resetOptions} />
-		</Folder>
-	{/if}
-</Pane>
+			{/each}
+			<Separator />
+			<ButtonGrid buttons={['Copy', 'Reset']} on:click={handleClick} />
+			<!-- Two-way binding must write through to the keyed expansion-state record. -->
+			<!-- eslint-disable-next-line svelte/prefer-destructured-store-props -->
+			<Folder title="Options" bind:expanded={$expandedStateStore[optionsExpandedStateKey]}>
+				<AutoObject bind:object={$optionsStore} />
+				<Button title="Reset Options" on:click={resetOptions} />
+			</Folder>
+		{/if}
+	</Pane>
+</div>

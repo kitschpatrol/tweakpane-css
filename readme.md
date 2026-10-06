@@ -43,7 +43,7 @@ The following Tweakpane will be automatically generated and displayed over your 
 
 Changes to variables are applied immediately, and then persisted to local storage. Any variable changes are automatically applied across page refreshes.
 
-The tweaked set of variables can be copied to the clipboard as CSS via the "Copy CSS" button.
+The tweaked set of variables can be copied to the clipboard as CSS via the "Copy" button.
 
 The "Reset" button restores the variables to the original values specified in the css file, clearing local storage in the process.
 
@@ -66,7 +66,7 @@ npm install --save-dev tweakpane-css
 2. Add the script tag to the `head` of your template, after any stylesheets or `style` elements that declare the CSS variables. Most casually, if you're only using Tweakpane CSS in local development, you can link right to the file in `node_modules`:
 
 ```html
-<script src="main.js"></script>
+<script src="/node_modules/tweakpane-css/dist/main.js"></script>
 ```
 
 More robust integration will depend on your framework / build tools / bundler, but again ensure that it is invoked as a classic script.
