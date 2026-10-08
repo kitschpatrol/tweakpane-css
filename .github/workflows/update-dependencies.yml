@@ -34,7 +34,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run ksc-update
-        uses: kitschpatrol/github-action-skill-to-pr@710cc149d42470565427d1bd957f51bb6d53ef9e # v1.1.0
+        uses: kitschpatrol/github-action-skill-to-pr@fe3e8b4aea5851133d8b064a68e92f7b7e4de1e4 # v1.1.1
         with:
           skill: ksc-update
           claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -67,7 +67,6 @@ jobs:
 
             Validation
             - `pnpm test` builds, then runs Playwright in Chromium against tests/fixture.html with real pointer interaction. The workflow installs Chromium before this step. If @playwright/test changes version, run `pnpm exec playwright install --with-deps chromium` before testing.
-            - Known pre-existing install warnings that need no peer rules: eslint-plugin-jsx-a11y@6.10.2's eslint peer (<=9) with eslint 10, which comes through @kitschpatrol/eslint-config, and deprecated glob@10.5.0. Report them only if they change.
             - The prepare script runs `skills experimental_sync` on every install. Its "Skipped ... SKILL.md" lines and the gitignored .agents/ directory it writes are expected noise.
             - TypeScript is capped by the @kitschpatrol/typescript-config peer range and by svelte-check's typescript peer range. Defer compiler majors until both allow them.
 

@@ -41,7 +41,7 @@
 		"test": "vite build && playwright test"
 	},
 	"devDependencies": {
-		"@kitschpatrol/shared-config": "^8.12.1",
+		"@kitschpatrol/shared-config": "^8.13.1",
 		"@playwright/test": "^1.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@types/qs": "^6.15.1",
