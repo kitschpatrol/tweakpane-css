@@ -674,17 +674,15 @@
 							{/if}
 						{/each}
 					</Folder>
-				{:else if plan.type === 'control'}
-					{#if isColorString($cssVariableStore[plan.key])}
-						<ColorPlus label={plan.label} bind:value={$cssVariableStore[plan.key] as string} />
-					{:else if isCubicBezierTuple($cssVariableStore[plan.key])}
-						<CubicBezier
-							label={plan.label}
-							bind:value={$cssVariableStore[plan.key] as [number, number, number, number]}
-						/>
-					{:else}
-						<AutoValue label={plan.label} bind:value={$cssVariableStore[plan.key]!} />
-					{/if}
+				{:else if isColorString($cssVariableStore[plan.key])}
+					<ColorPlus label={plan.label} bind:value={$cssVariableStore[plan.key] as string} />
+				{:else if isCubicBezierTuple($cssVariableStore[plan.key])}
+					<CubicBezier
+						label={plan.label}
+						bind:value={$cssVariableStore[plan.key] as [number, number, number, number]}
+					/>
+				{:else}
+					<AutoValue label={plan.label} bind:value={$cssVariableStore[plan.key]!} />
 				{/if}
 			{/each}
 			<Separator />

@@ -8,28 +8,33 @@ minimumReleaseAgeExclude:
   - '@eslint-react/jsx@5.24.5'
   - '@eslint-react/shared@5.24.5'
   - '@eslint-react/var@5.24.5'
-  - '@kitschpatrol/cspell-config@8.13.1'
-  - '@kitschpatrol/eslint-config@8.13.1'
-  - '@kitschpatrol/knip-config@8.13.1'
-  - '@kitschpatrol/mdat-config@8.13.1'
-  - '@kitschpatrol/prettier-config@8.13.1'
-  - '@kitschpatrol/remark-config@8.13.1'
-  - '@kitschpatrol/repo-config@8.13.1'
-  - '@kitschpatrol/shared-config@8.13.1'
-  - '@kitschpatrol/stylelint-config@8.13.1'
-  - '@kitschpatrol/typescript-config@8.13.1'
+  - '@kitschpatrol/cspell-config@8.14.0'
+  - '@kitschpatrol/eslint-config@8.14.0'
+  - '@kitschpatrol/knip-config@8.14.0'
+  - '@kitschpatrol/mdat-config@8.14.0'
+  - '@kitschpatrol/prettier-config@8.14.0'
+  - '@kitschpatrol/remark-config@8.14.0'
+  - '@kitschpatrol/repo-config@8.14.0'
+  - '@kitschpatrol/shared-config@8.14.0'
+  - '@kitschpatrol/stylelint-config@8.14.0'
+  - '@kitschpatrol/typescript-config@8.14.0'
   - eslint-plugin-react-dom@5.24.5
   - eslint-plugin-react-jsx@5.24.5
   - eslint-plugin-react-naming-convention@5.24.5
   - eslint-plugin-react-rsc@5.24.5
   - eslint-plugin-react-web-api@5.24.5
   - eslint-plugin-react-x@5.24.5
+  - mdat@3.6.6
+  - remark-mdat@3.1.2
 peerDependencyRules:
   allowedVersions:
     # Remove once the installed version declares ESLint 10 support.
     # https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/1075
     # https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/1081
     eslint-plugin-jsx-a11y@6>eslint: ^10.0.0
+permissions:
+  '@kitschpatrol/shared-config':
+    skills: true
 publicHoistPattern:
   - '@kitschpatrol/repo-config'
   - '@kitschpatrol/typescript-config'
@@ -41,3 +46,7 @@ publicHoistPattern:
   - '*remark*'
   - '*stylelint*'
   - 'case-police'
+skills:
+  dirs:
+    - .agents/skills
+    - .claude/skills
