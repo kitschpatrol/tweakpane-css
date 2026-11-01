@@ -41,31 +41,31 @@
 	},
 	"devDependencies": {
 		"@kitschpatrol/shared-config": "^8.14.0",
-		"@playwright/test": "^1.63.0",
+		"@playwright/test": "^1.64.1",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@types/qs": "^6.15.1",
 		"bumpp": "^12.3.0",
-		"color-parse": "^2.1.2",
+		"color-parse": "^2.2.0",
 		"element-ready": "^9.0.2",
 		"npm-run-all": "^4.1.5",
-		"qs": "^6.16.0",
+		"qs": "^6.17.1",
 		"shx": "^0.4.0",
-		"svelte": "^5.57.1",
-		"svelte-check": "^4.7.6",
+		"svelte": "^5.57.3",
+		"svelte-check": "^4.7.7",
 		"svelte-persisted-store": "^0.12.0",
-		"svelte-tweakpane-ui": "^1.6.0",
+		"svelte-tweakpane-ui": "^1.6.2",
 		"typescript": "~6.0.3",
-		"vite": "^8.3.2",
+		"vite": "^8.3.5",
 		"vite-plugin-live-reload": "^3.1.0"
 	},
-	"packageManager": "pnpm@12.15.0",
+	"packageManager": "pnpm@12.16.1",
 	"engines": {
 		"node": "^22.0.0 || ^24.0.0 || >=26.0.0"
 	},
 	"devEngines": {
 		"runtime": {
 			"name": "node",
-			"version": ">=24.16.0"
+			"version": "^24.16.0 || >=26.3.0"
 		}
 	}
 }
