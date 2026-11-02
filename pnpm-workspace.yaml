@@ -1,5 +1,8 @@
 allowBuilds:
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - svelte-tweakpane-ui@1.6.3
+  - tweakpane-plugin-color-plus@0.7.1
 peerDependencyRules:
   allowedVersions:
     # Remove once the installed version declares ESLint 10 support.
