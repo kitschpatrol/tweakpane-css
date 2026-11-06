@@ -1,6 +1,7 @@
 allowBuilds:
   unrs-resolver: true
 minimumReleaseAgeExclude:
+  - '@kitschpatrol/chagent@0.4.0'
   - svelte-tweakpane-ui@1.6.3
   - tweakpane-plugin-color-plus@0.7.1
 peerDependencyRules:

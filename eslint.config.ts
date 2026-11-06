@@ -6,6 +6,7 @@ export default eslintConfig({
 			'@html-eslint/no-inline-styles': 'off',
 		},
 	},
+	ignores: ['**/changelog.md'],
 	rules: {
 		'require-unicode-regexp': ['error', { requireFlag: 'u' }],
 	},
